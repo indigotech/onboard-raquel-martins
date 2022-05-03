@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js"
+    "start": "node ./src/index.js",
+    "dev": "ts-node-dev ./src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -19,9 +20,14 @@
   },
   "homepage": "https://github.com/indigotech/onboard-raquel-martins#readme",
   "dependencies": {
+    "apollo-server": "^3.6.7",
     "express": "^4.18.1",
     "express-graphql": "^0.12.0",
     "graphql": "^16.4.0",
     "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.6.4"
   }
 }
