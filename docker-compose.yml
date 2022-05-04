@@ -1,21 +1,22 @@
-localdb:
-  image: postgres:11.2  # you can pick the most recent version available
-  ports:
-    - "5432:5432"
-  volumes:
-    - ./db/dumps:/app-db-dumps
-  environment:
-    - POSTGRES_USER=raquelmms
-    - POSTGRES_PASSWORD=022raGy8@
-    - POSTGRES_DB=raquelmmsDocker
+services:
+  localdb:
+    image: postgres:11.2  # you can pick the most recent version available
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/dumps:/app-db-dumps
+    environment:
+      - POSTGRES_USER=raquelmms
+      - POSTGRES_PASSWORD=123abc
+      - POSTGRES_DB=raquelmms
 
-testdb:
-  image: postgres:11.2
-  ports:
-    - "5433:5432"
-  volumes:
-    - ./db/dumps:/app-db-dumps
-  environment:
-    - POSTGRES_USER=raquelmms
-    - POSTGRES_PASSWORD=022raGy8@
-    - POSTGRES_DB=raquelmmsDocker
+  testdb:
+    image: postgres:11.2
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db/dumps:/app-db-dumps
+    environment:
+      - POSTGRES_USER=raquelmms
+      - POSTGRES_PASSWORD=123abc
+      - POSTGRES_DB=raquelmms
