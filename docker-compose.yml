@@ -1,0 +1,23 @@
+services:
+  localdb:
+    image: postgres:13.4  # you can pick the most recent version available
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/dumps:/app-db-dumps
+    environment:
+      - POSTGRES_USER=raquelmms
+      - POSTGRES_PASSWORD=123abc
+      - POSTGRES_DB=raquelmms
+
+  testdb:
+    image: postgres:13.4
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db/dumps:/app-db-dumps
+    environment:
+      - POSTGRES_USER=raquelmms
+      - POSTGRES_PASSWORD=123abc
+      - POSTGRES_DB=raquelmms
+      
