@@ -1,27 +1,27 @@
-import "reflect-metadata";
-import { DataSource } from "typeorm";
-import { User } from "./entity/User";
-import { v4 as uuidv4 } from "uuid";
-import { ApolloServer, gql } from "apollo-server";
+import 'reflect-metadata';
+import { DataSource } from 'typeorm';
+import { User } from './entity/User';
+import { v4 as uuidv4 } from 'uuid';
+import { ApolloServer, gql } from 'apollo-server';
 
 export const AppDataSource = new DataSource({
-  type: "postgres",
-  host: "localhost",
+  type: 'postgres',
+  host: 'localhost',
   port: 5432,
-  username: "raquelmms",
-  password: "123abc",
-  database: "raquelmms",
+  username: 'raquelmms',
+  password: '123abc',
+  database: 'raquelmms',
   synchronize: true,
   logging: false,
   entities: [User],
   migrations: [],
-  subscribers: [],
+  subscribers: []
 });
 
 AppDataSource.initialize()
   .then(() => {
     const addUser = async ({ id, name, email, password, birthDate }) => {
-      console.log("addUser:", id, name, email, password, birthDate);
+      console.log('addUser:', id, name, email, password, birthDate);
       const response = await AppDataSource.createQueryBuilder()
         .insert()
         .into(User)
@@ -31,8 +31,8 @@ AppDataSource.initialize()
             name: name,
             email: email,
             password: password,
-            birthDate: birthDate,
-          },
+            birthDate: birthDate
+          }
         ])
         .execute();
       return response;
@@ -63,8 +63,8 @@ AppDataSource.initialize()
     const resolvers = {
       Query: {
         hello: () => {
-          return "Hello world!";
-        },
+          return 'Hello world!';
+        }
       },
       Mutation: {
         async createUser(parent, args) {
@@ -74,7 +74,7 @@ AppDataSource.initialize()
               name: args.name,
               email: args.email,
               password: args.password,
-              birthDate: args.birthDate,
+              birthDate: args.birthDate
             };
 
             if (
@@ -83,17 +83,17 @@ AppDataSource.initialize()
               !user.password ||
               !user.birthDate
             ) {
-              throw new Error("Please check the fields!");
+              throw new Error('Please check the fields!');
             }
-            console.log("user", user);
+            console.log('user', user);
             console.log(await addUser(user));
 
-            return { message: "User created" };
+            return { message: 'User created' };
           } catch (error: any) {
             return `message: ${error.message}`;
           }
-        },
-      },
+        }
+      }
     };
     const server = new ApolloServer({ typeDefs, resolvers });
     server.listen(4000).then(({ url }) => {
