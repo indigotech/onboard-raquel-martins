@@ -1,6 +1,27 @@
 import { ApolloServer, gql } from 'apollo-server';
+import { AppDataSource } from './data-source';
 import { User } from './entity/User';
 import { v4 as uuidv4 } from 'uuid';
+
+AppDataSource.initialize()
+  .then(async () => {
+    console.log('Inserting a new user into the database...');
+    const user = new User();
+    user.name = 'Timber';
+    user.email = 'timber@email.com';
+    user.password = '123456';
+    user.birthDate = '01-01-1990';
+    await AppDataSource.manager.save(user);
+    console.log('Saved a new user');
+    console.log('Loading users from the database...');
+    const users = await AppDataSource.manager.find(User);
+    console.log('Loaded users: ', users);
+
+    console.log(
+      'Here you can setup and run express / fastify / any other framework.'
+    );
+  })
+  .catch((error) => console.log(error));
 
 //Data store mock
 const users = [
