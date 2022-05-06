@@ -21,20 +21,13 @@ export const AppDataSource = new DataSource({
 AppDataSource.initialize()
   .then(() => {
     const addUser = async ({ id, name, email, password, birthDate }) => {
-      console.log('addUser:', id, name, email, password, birthDate);
-      const response = await AppDataSource.createQueryBuilder()
-        .insert()
-        .into(User)
-        .values([
-          {
-            id: id,
-            name: name,
-            email: email,
-            password: password,
-            birthDate: birthDate
-          }
-        ])
-        .execute();
+      const response = await AppDataSource.manager.insert(User, {
+        id,
+        name,
+        email,
+        password,
+        birthDate
+      });
       return response;
     };
 
@@ -85,10 +78,8 @@ AppDataSource.initialize()
             ) {
               throw new Error('Please check the fields!');
             }
-            console.log('user', user);
-            console.log(await addUser(user));
-
-            return { message: 'User created' };
+            const result = await addUser(user);
+            return result;
           } catch (error: any) {
             return `message: ${error.message}`;
           }
