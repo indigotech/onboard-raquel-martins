@@ -72,7 +72,7 @@ const setupServer = async () => {
     }
   };
   const server = new ApolloServer({ typeDefs, resolvers });
-  server.listen(4000).then(({ url }) => {
+  server.listen(process.env.PORT).then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`);
   });
 };
