@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js",
-    "dev": "ts-node-dev ./src/data-source.ts",
+    "start": "node ./src/index.ts",
+    "dev": "ts-node-dev ./src/index.ts",
     "prettier-watch": "onchange 'src/index.ts' -- prettier --write {{changed}}"
   },
   "repository": {
