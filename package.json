@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js",
+    "start": "node ./src/index.ts",
     "dev": "ts-node-dev ./src/index.ts",
     "prettier-watch": "onchange 'src/index.ts' -- prettier --write {{changed}}"
   },
@@ -27,10 +27,7 @@
     "graphql": "16.4.0",
     "lodash": "4.17.21",
     "onchange": "7.1.0",
-    "pg": "8.7.3",
-    "reflect-metadata": "0.1.13",
-    "typeorm": "0.3.6",
-    "uuidv4": "6.2.13"
+    "reflect-metadata": "0.1.13"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.22.0",

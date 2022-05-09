@@ -1,6 +1,6 @@
 services:
   localdb:
-    image: postgres:13.4  # you can pick the most recent version available
+    image: postgres:11.2  # you can pick the most recent version available
     ports:
       - "5432:5432"
     volumes:
@@ -11,7 +11,7 @@ services:
       - POSTGRES_DB=raquelmms
 
   testdb:
-    image: postgres:13.4
+    image: postgres:11.2
     ports:
       - "5433:5432"
     volumes:
@@ -19,5 +19,5 @@ services:
     environment:
       - POSTGRES_USER=raquelmms
       - POSTGRES_PASSWORD=123abc
-      - POSTGRES_DB=raquelmms
+      - POSTGRES_DB=raquelmms_test
       
