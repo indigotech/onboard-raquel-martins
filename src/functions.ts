@@ -2,29 +2,21 @@ import { AppDataSource } from './data-source';
 import { User } from './entity/User';
 
 export const containLetter = (pass: string): boolean => {
-  const letters = 'abcdefghijklmnopqrstuvwxyz';
+  const letters = new RegExp('[A-Za-z]');
   const password = pass;
   let findLetter = false;
-  for (let i = 0; i < password.length; i++) {
-    for (let j = 0; j < letters.length; j++) {
-      if (password[i].toLowerCase().includes(letters[j])) {
-        findLetter = true;
-      }
-    }
+  if (letters.test(password)) {
+    findLetter = true;
   }
   return findLetter;
 };
 
 export const containDigit = (pass: string) => {
-  const digits = '0123456789';
+  const digits = new RegExp('[0-9]+');
   const password = pass;
   let findDigit = false;
-  for (let i = 0; i < password.length; i++) {
-    for (let j = 0; j < digits.length; j++) {
-      if (password[i].toLowerCase().includes(digits[j])) {
-        findDigit = true;
-      }
-    }
+  if (digits.test(password)) {
+    findDigit = true;
   }
   return findDigit;
 };
