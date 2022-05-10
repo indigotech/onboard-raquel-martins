@@ -63,10 +63,7 @@ const setupServer = async () => {
         const password = await bcrypt.hash(args.password, 10);
         const user = {
           id: uuidv4(),
-          name: args.name,
-          email: args.email,
-          password: args.password,
-          birthDate: args.birthDate
+          ...args
         };
         if (!user.name || !user.email || !user.password || !user.birthDate) {
           throw new CustomError('Please check the fields!', 422);
