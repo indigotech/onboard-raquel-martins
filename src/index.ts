@@ -3,6 +3,8 @@ import { User } from './entity/User';
 import { v4 as uuidv4 } from 'uuid';
 import { ApolloServer, gql } from 'apollo-server';
 import { AppDataSource } from './data-source';
+import { CustomError } from './errors';
+import { containLetter, containDigit, findUserEmail } from './functions';
 
 const connectionDb = async () => {
   await AppDataSource.initialize();
@@ -10,14 +12,20 @@ const connectionDb = async () => {
 };
 
 const addUser = async ({ id, name, email, password, birthDate }) => {
-  const response = await AppDataSource.manager.insert(User, {
+  await AppDataSource.manager.insert(User, {
     id,
     name,
     email,
     password,
     birthDate
   });
-  return response;
+  const userCreated = {
+    id,
+    name,
+    email,
+    birthDate
+  };
+  return userCreated;
 };
 
 const setupServer = async () => {
@@ -51,23 +59,43 @@ const setupServer = async () => {
     },
     Mutation: {
       async createUser(parent, args) {
-        try {
-          const user = {
-            id: uuidv4(),
-            name: args.name,
-            email: args.email,
-            password: args.password,
-            birthDate: args.birthDate
-          };
-
-          if (!user.name || !user.email || !user.password || !user.birthDate) {
-            throw new Error('Please check the fields!');
-          }
-          const result = await addUser(user);
-          return result;
-        } catch (error: any) {
-          return `message: ${error.message}`;
+        const user = {
+          id: uuidv4(),
+          name: args.name,
+          email: args.email,
+          password: args.password,
+          birthDate: args.birthDate
+        };
+        if (!user.name || !user.email || !user.password || !user.birthDate) {
+          throw new CustomError('Please check the fields!', 422);
         }
+        if (user.password.length < 6) {
+          throw new CustomError(
+            'Password must contain at least 6 characters',
+            422
+          );
+        }
+
+        if (!containLetter(user.password)) {
+          throw new CustomError(
+            'The password must contain at least 1 letter',
+            422
+          );
+        }
+
+        if (!containDigit(user.password)) {
+          throw new CustomError(
+            'The password must contain at least 1 digit',
+            422
+          );
+        }
+
+        if (await findUserEmail(user.email)) {
+          throw new CustomError('Email already registered', 409);
+        }
+
+        const result = await addUser(user);
+        return result;
       }
     }
   };
