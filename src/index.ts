@@ -5,6 +5,7 @@ import { ApolloServer, gql } from 'apollo-server';
 import { AppDataSource } from './data-source';
 import { CustomError } from './errors';
 import { containLetter, containDigit, findUserEmail } from './functions';
+import * as bcrypt from 'bcrypt';
 
 const connectionDb = async () => {
   await AppDataSource.initialize();
@@ -59,6 +60,7 @@ const setupServer = async () => {
     },
     Mutation: {
       async createUser(parent, args) {
+        const password = await bcrypt.hash(args.password, 10);
         const user = {
           id: uuidv4(),
           name: args.name,
@@ -93,8 +95,12 @@ const setupServer = async () => {
         if (await findUserEmail(user.email)) {
           throw new CustomError('Email already registered', 409);
         }
+        const userData = {
+          ...user,
+          password
+        };
 
-        const result = await addUser(user);
+        const result = await addUser(userData);
         return result;
       }
     }
