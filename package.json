@@ -27,6 +27,9 @@
     "graphql": "16.4.0",
     "lodash": "4.17.21",
     "onchange": "7.1.0",
+    "pg": "8.7.3",
+    "typeorm": "0.3.6",
+    "uuidv4": "6.2.13",
     "reflect-metadata": "0.1.13"
   },
   "devDependencies": {
