@@ -3,13 +3,17 @@ import { expect } from 'chai';
 
 describe('Hello Query', () => {
   it('should return hello message', async () => {
-    const result = await axios.post('http://localhost:4001/', {
+    const result = await axios.post('http://localhost:4000', {
       query: `
            query Hello {
             hello
             }
             `
     });
-    expect(result.data.hello).to.be.eq('Hello world!');
+    expect(result.data).to.be.deep.eq({
+      data: {
+        hello: 'Hello world!'
+      }
+    });
   });
 });
