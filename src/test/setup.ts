@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import { User } from './entity/User';
+import { User } from '../src/entity/User';
 import { v4 as uuidv4 } from 'uuid';
 import { ApolloServer, gql } from 'apollo-server';
 import { AppDataSource } from './data-source';
-import { CustomError } from './errors';
-import { containLetter, containDigit, findUserEmail } from './functions';
+import { CustomError } from '../src/errors';
+import { containLetter, containDigit, findUserEmail } from '../src/functions';
 import * as bcrypt from 'bcrypt';
 
 const connectionDb = async () => {
@@ -12,14 +12,16 @@ const connectionDb = async () => {
   console.info('DB connected');
 };
 
-const addUser = async ({ name, email, password, birthDate }) => {
+const addUser = async ({ id, name, email, password, birthDate }) => {
   await AppDataSource.manager.insert(User, {
+    id,
     name,
     email,
     password,
     birthDate
   });
   const userCreated = {
+    id,
     name,
     email,
     birthDate
@@ -33,20 +35,20 @@ const setupServer = async () => {
       hello: String
     }
     type User {
-      id: String!
-      name: String!
-      email: String!
-      password: String!
-      birthDate: String
-    }
-    input UserInput {
-      name: String!
-      email: String!
-      password: String!
+      id: String
+      name: String
+      email: String
+      password: String
       birthDate: String
     }
     type Mutation {
-      createUser(data: UserInput!): User!
+      createUser(
+        id: String
+        name: String
+        email: String
+        password: String
+        birthDate: String
+      ): User!
     }
   `;
 
@@ -58,10 +60,14 @@ const setupServer = async () => {
     },
     Mutation: {
       async createUser(parent, args) {
-        const password = await bcrypt.hash(args.data.password, 10);
-        const user: User = {
-          ...args.data
+        const password = await bcrypt.hash(args.password, 10);
+        const user = {
+          id: uuidv4(),
+          ...args
         };
+        if (!user.name || !user.email || !user.password || !user.birthDate) {
+          throw new CustomError('Please check the fields!', 422);
+        }
         if (user.password.length < 6) {
           throw new CustomError(
             'Password must contain at least 6 characters',
