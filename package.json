@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "# teste",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha -r ts-node/register ./src/test/index.ts",
+    "teste": "node ./test/setup.ts",
     "start": "node ./src/index.ts",
     "dev": "ts-node-dev ./src/index.ts",
     "prettier-watch": "onchange 'src/index.ts' -- prettier --write {{changed}}"
@@ -21,8 +23,8 @@
   },
   "homepage": "https://github.com/indigotech/onboard-raquel-martins#readme",
   "dependencies": {
-    "@types/bcrypt": "5.0.0",
     "apollo-server": "3.6.7",
+    "axios": "^0.27.2",
     "bcrypt": "5.0.1",
     "bcryptjs": "2.4.3",
     "express": "4.18.1",
@@ -37,13 +39,19 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "2.4.2",
+    "@types/bcrypt": "5.0.0",
+    "@types/chai": "4.3.1",
     "@types/jsonwebtoken": "8.5.8",
+    "@types/mocha": "^9.1.1",
     "@typescript-eslint/eslint-plugin": "5.22.0",
     "@typescript-eslint/parser": "5.22.0",
+    "chai": "4.3.6",
     "eslint": "8.14.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
+    "mocha": "10.0.0",
     "prettier": "2.6.2",
+    "ts-node": "10.7.0",
     "ts-node-dev": "1.1.8",
     "typescript": "4.6.4"
   }
