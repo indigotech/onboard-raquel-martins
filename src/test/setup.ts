@@ -1,11 +1,11 @@
 import 'reflect-metadata';
-import { User } from './entity/User';
+import { User } from '../entity/User';
 import { v4 as uuidv4 } from 'uuid';
 import { ApolloServer, gql } from 'apollo-server';
-import { AppDataSource } from './data-source';
-import { CustomError } from './errors';
-import { containLetter, containDigit, findUserEmail } from './functions';
+import { CustomError } from '../errors';
+import { containLetter, containDigit, findUserEmail } from '../functions';
 import * as bcrypt from 'bcrypt';
+import { AppDataSource } from '../data-source';
 
 const connectionDb = async () => {
   await AppDataSource.initialize();
@@ -115,4 +115,3 @@ export async function setup() {
   await connectionDb();
   await setupServer();
 }
-setup();
