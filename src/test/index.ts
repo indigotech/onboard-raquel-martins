@@ -1,8 +1,10 @@
 import { config } from 'dotenv';
+import { setup } from './setup';
 
-config();
-
-console.log(process.env.DB_NAME);
+before(async () => {
+  config({ path: `${process.cwd()}/test.env` });
+  await setup();
+});
 
 describe('Hello Query', () => {
   it('should return hello message', async () => {
