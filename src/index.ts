@@ -109,4 +109,3 @@ export async function setup() {
   await connectionDb();
   await setupServer();
 }
-setup();
