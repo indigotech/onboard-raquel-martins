@@ -19,5 +19,5 @@ services:
     environment:
       - POSTGRES_USER=raquelmms
       - POSTGRES_PASSWORD=123abc
-      - POSTGRES_DB=raquelmms_test
+      - POSTGRES_DB=raquelmms_testbanco
       

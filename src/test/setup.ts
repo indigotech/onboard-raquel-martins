@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import { User } from './entity/User';
+import { User } from '../entity/User';
 import { ApolloServer, gql } from 'apollo-server';
 import { AppDataSource } from './data-source';
-import { CustomError } from './errors';
+import { CustomError } from '../errors';
 import { containLetter, containDigit, findUserEmail } from './functions';
 import * as bcrypt from 'bcrypt';
 
@@ -11,19 +11,13 @@ const connectionDb = async () => {
   console.info('DB connected');
 };
 
-const addUser = async ({ name, email, password, birthDate }) => {
-  await AppDataSource.manager.insert(User, {
+export const addUser = ({ name, email, password, birthDate }) => {
+  return AppDataSource.manager.save(User, {
     name,
     email,
     password,
     birthDate
   });
-  const userCreated = {
-    name,
-    email,
-    birthDate
-  };
-  return userCreated;
 };
 
 const setupServer = async () => {
@@ -35,7 +29,6 @@ const setupServer = async () => {
       id: String!
       name: String!
       email: String!
-      password: String!
       birthDate: String
     }
     input UserInput {
@@ -90,13 +83,12 @@ const setupServer = async () => {
           password
         };
 
-        const result = await addUser(userData);
-        return result;
+        return addUser(userData);
       }
     }
   };
   const server = new ApolloServer({ typeDefs, resolvers });
-  server.listen(process.env.PORT).then(({ url }) => {
+  server.listen(4001).then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`);
   });
 };
@@ -105,4 +97,3 @@ export async function setup() {
   await connectionDb();
   await setupServer();
 }
-setup();
