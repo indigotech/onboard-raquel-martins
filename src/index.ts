@@ -59,7 +59,7 @@ const setupServer = async () => {
       }
     },
     Mutation: {
-      async createUser(parent, args) {
+      async createUser(args) {
         const password = await bcrypt.hash(args.password, 10);
         const user = {
           id: uuidv4(),
@@ -115,4 +115,3 @@ export async function setup() {
   await connectionDb();
   await setupServer();
 }
-setup();
