@@ -11,7 +11,7 @@ const connectionDb = async () => {
   console.info('DB connected');
 };
 
-export const addUser = ({ name, email, password, birthDate }) => {
+const addUser = ({ name, email, password, birthDate }) => {
   return AppDataSource.manager.save(User, {
     name,
     email,
