@@ -8,6 +8,7 @@ import { QueryCreateUser } from './QueryCreateUser';
 
 before(async () => {
   config({ path: `${process.cwd()}/test.env` });
+  await AppDataSource.initialize();
   await setup();
 });
 
