@@ -6,7 +6,7 @@ import { CustomError } from '../errors';
 import { containLetter, containDigit, findUserEmail } from './functions';
 import * as bcrypt from 'bcrypt';
 
-const connectionDb = async () => {
+const connectToDB = async () => {
   await AppDataSource.initialize();
   console.info('DB connected');
 };
@@ -88,12 +88,13 @@ const setupServer = async () => {
     }
   };
   const server = new ApolloServer({ typeDefs, resolvers });
-  server.listen(4001).then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}`);
-  });
+
+  const { url } = await server.listen(4001);
+
+  console.log(`🚀  Server ready at ${url}`);
 };
 
 export async function setup() {
-  await connectionDb();
+  await connectToDB();
   await setupServer();
 }
