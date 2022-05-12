@@ -47,13 +47,21 @@ describe('CreateUser Mutation', async () => {
   });
   it('should create a user', async () => {
     const response = await QueryCreateUser(input);
-    await QueryCreateUser(input2);
+    const findUser = await AppDataSource.manager.findOneBy(User, {
+      email: input.email
+    });
     delete input.password;
+    delete findUser.password;
+    delete findUser.id;
     const { id, ...userFields } = response.data.data.createUser;
     expect(userFields).to.be.deep.eq(input);
     expect(id).to.be.a('string');
+    expect(userFields.name).to.be.equal(findUser.name);
+    expect(userFields.email).to.be.equal(findUser.email);
+    expect(userFields.birthDate).to.be.equal(findUser.birthDate);
   });
   it('should appear if the user passes an existing email', async () => {
+    await QueryCreateUser(input2);
     const response = await QueryCreateUser(input2);
     expect(response.data.errors[0].message).to.be.equal(
       'Email already registered'
