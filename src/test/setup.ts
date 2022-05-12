@@ -57,21 +57,21 @@ const setupServer = async () => {
         if (user.password.length < 6) {
           throw new CustomError(
             'Password must contain at least 6 characters',
-            422
+            400
           );
         }
 
         if (!containLetter(user.password)) {
           throw new CustomError(
             'The password must contain at least 1 letter',
-            422
+            400
           );
         }
 
         if (!containDigit(user.password)) {
           throw new CustomError(
             'The password must contain at least 1 digit',
-            422
+            400
           );
         }
 
