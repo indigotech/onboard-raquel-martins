@@ -8,12 +8,6 @@ before(async () => {
   await setup();
 });
 
-describe('console log', () => {
-  it('teste', async () => {
-    console.log('teste');
-  });
-});
-
 describe('Hello Query', () => {
   it('should return hello message', async () => {
     const result = await axios.post('http://localhost:4000', {
