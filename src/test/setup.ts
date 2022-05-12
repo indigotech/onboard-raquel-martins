@@ -6,11 +6,6 @@ import { CustomError } from '../errors';
 import { containLetter, containDigit, findUserEmail } from './functions';
 import * as bcrypt from 'bcrypt';
 
-const connectToDB = async () => {
-  await AppDataSource.initialize();
-  console.info('DB connected');
-};
-
 const addUser = ({ name, email, password, birthDate }) => {
   return AppDataSource.manager.save(User, {
     name,
@@ -95,6 +90,5 @@ const setupServer = async () => {
 };
 
 export async function setup() {
-  await connectToDB();
   await setupServer();
 }
