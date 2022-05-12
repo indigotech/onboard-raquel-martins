@@ -5,6 +5,8 @@ import { expect } from 'chai';
 import { AppDataSource } from './data-source';
 import { User } from '../entity/User';
 import { QueryCreateUser } from './QueryCreateUser';
+import { QueryLogin } from './QueryLogin';
+import * as jwt from 'jsonwebtoken';
 
 before(async () => {
   config({ path: `${process.cwd()}/test.env` });
@@ -28,6 +30,7 @@ describe('Hello Query', () => {
     });
   });
 });
+
 const input = {
   name: 'UserTeste1',
   email: 'userteste1@email.com',
@@ -96,5 +99,31 @@ describe('CreateUser Mutation', async () => {
       'The password must contain at least 1 digit'
     );
     expect(response.data.errors[0].extensions.exception.code).to.be.equal(400);
+  });
+});
+
+const loginInput = {
+  email: 'userteste2@email.com',
+  password: '1234abc'
+};
+describe('Login Mutation', async () => {
+  beforeEach(async () => {
+    await AppDataSource.getRepository(User);
+  });
+
+  it('should login', async () => {
+    const findUser = await AppDataSource.manager.findOneBy(User, {
+      email: loginInput.email
+    });
+    const response = await QueryLogin(loginInput);
+    const { email, name, birthDate } = response.data.data.login.user;
+    const token = response.data.data.login.token;
+    const decoded = jwt.verify(token, 'thisisasecretkey');
+    const tokenPayload = decoded as jwt.JwtPayload;
+    expect(email).to.be.equal(findUser.email);
+    expect(name).to.be.equal(findUser.name);
+    expect(birthDate).to.be.equal(findUser.birthDate);
+    expect(tokenPayload.email).to.be.equal(findUser.email);
+    expect(tokenPayload.userId).to.be.equal(findUser.id);
   });
 });

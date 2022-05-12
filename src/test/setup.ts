@@ -5,6 +5,7 @@ import { AppDataSource } from './data-source';
 import { CustomError } from '../errors';
 import { containLetter, containDigit, findUserEmail } from './functions';
 import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
 
 const addUser = ({ name, email, password, birthDate }) => {
   return AppDataSource.manager.save(User, {
@@ -34,6 +35,15 @@ const setupServer = async () => {
     }
     type Mutation {
       createUser(data: UserInput!): User!
+      login(data: LoginUserInput!): AuthPayload!
+    }
+    input LoginUserInput {
+      email: String!
+      password: String!
+    }
+    type AuthPayload {
+      user: User!
+      token: String
     }
   `;
 
@@ -79,6 +89,32 @@ const setupServer = async () => {
         };
 
         return addUser(userData);
+      },
+      async login(_, args) {
+        console.log(args.data);
+        const user = await AppDataSource.manager.findOneBy(User, {
+          email: args.data.email
+        });
+        console.log(user);
+        if (!user) {
+          throw new CustomError('Unable to login', 404);
+        }
+        const isMatch = await bcrypt.compare(args.data.password, user.password);
+        if (!isMatch) {
+          throw new CustomError('Unable to login', 404);
+        }
+        return {
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            birthDate: user.birthDate
+          },
+          token: jwt.sign(
+            { userId: user.id, email: user.email },
+            'thisisasecretkey'
+          )
+        };
       }
     }
   };
