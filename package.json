@@ -7,7 +7,6 @@
   "scripts": {
     "test": "mocha ./src/test/index.ts --exit",
     "start": "node ./src/index.ts",
-    "serveteste": "node ./src/test/setup.ts",
     "dev": "ts-node-dev ./src/index.ts",
     "prettier-watch": "onchange 'src/index.ts' -- prettier --write {{changed}}"
   },

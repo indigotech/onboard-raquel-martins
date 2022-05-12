@@ -6,24 +6,18 @@ import { CustomError } from './errors';
 import { containLetter, containDigit, findUserEmail } from './functions';
 import * as bcrypt from 'bcrypt';
 
-const connectionDb = async () => {
+const connectToDB = async () => {
   await AppDataSource.initialize();
   console.info('DB connected');
 };
 
 const addUser = async ({ name, email, password, birthDate }) => {
-  await AppDataSource.manager.insert(User, {
+  return AppDataSource.manager.save(User, {
     name,
     email,
     password,
     birthDate
   });
-  const userCreated = {
-    name,
-    email,
-    birthDate
-  };
-  return userCreated;
 };
 
 const setupServer = async () => {
@@ -64,21 +58,21 @@ const setupServer = async () => {
         if (user.password.length < 6) {
           throw new CustomError(
             'Password must contain at least 6 characters',
-            422
+            400
           );
         }
 
         if (!containLetter(user.password)) {
           throw new CustomError(
             'The password must contain at least 1 letter',
-            422
+            400
           );
         }
 
         if (!containDigit(user.password)) {
           throw new CustomError(
             'The password must contain at least 1 digit',
-            422
+            400
           );
         }
 
@@ -103,7 +97,7 @@ const setupServer = async () => {
 };
 
 export async function setup() {
-  await connectionDb();
+  await connectToDB();
   await setupServer();
 }
 setup();
