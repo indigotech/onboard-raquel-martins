@@ -97,12 +97,13 @@ const setupServer = async () => {
     }
   };
   const server = new ApolloServer({ typeDefs, resolvers });
-  server.listen(process.env.PORT).then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}`);
-  });
+
+  const { url } = await server.listen(process.env.PORT);
+
+  console.log(`🚀  Server ready at ${url}`);
 };
 
-async function setup() {
+export async function setup() {
   await connectionDb();
   await setupServer();
 }
