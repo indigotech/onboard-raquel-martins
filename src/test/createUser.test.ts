@@ -43,6 +43,7 @@ describe('CreateUser Mutation', async () => {
     expect(response.data.errors[0].message).to.be.equal(
       'Email already registered'
     );
+    expect(response.data.errors[0].extensions.exception.code).to.be.equal(409);
   });
 
   it('should appear an error if the password is less than 6 characters', async () => {
