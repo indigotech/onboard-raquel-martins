@@ -5,8 +5,9 @@ import { expect } from 'chai';
 import { AppDataSource } from './data-source';
 import { User } from '../entity/User';
 import { QueryCreateUser } from './QueryCreateUser';
-import { QueryLogin } from './QueryLogin';
+import { queryLogin } from './QueryLogin';
 import * as jwt from 'jsonwebtoken';
+import { secretKey } from 'secretKey';
 
 before(async () => {
   config({ path: `${process.cwd()}/test.env` });
@@ -115,10 +116,10 @@ describe('Login Mutation', async () => {
     const findUser = await AppDataSource.manager.findOneBy(User, {
       email: loginInput.email
     });
-    const response = await QueryLogin(loginInput);
+    const response = await queryLogin(loginInput);
     const { email, name, birthDate } = response.data.data.login.user;
     const token = response.data.data.login.token;
-    const decoded = jwt.verify(token, 'thisisasecretkey');
+    const decoded = jwt.verify(token, secretKey);
     const tokenPayload = decoded as jwt.JwtPayload;
     expect(email).to.be.equal(findUser.email);
     expect(name).to.be.equal(findUser.name);

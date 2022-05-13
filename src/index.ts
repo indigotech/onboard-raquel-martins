@@ -6,6 +6,7 @@ import { CustomError } from './errors';
 import { containLetter, containDigit, findUserEmail } from './functions';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { secretKey } from 'secretKey';
 
 const connectToDB = async () => {
   await AppDataSource.initialize();
@@ -41,13 +42,13 @@ const setupServer = async () => {
     }
     type Mutation {
       createUser(data: UserInput!): User!
-      login(data: LoginUserInput!): AuthPayload!
+      login(data: LoginInput!): Auth!
     }
-    input LoginUserInput {
+    input LoginInput {
       email: String!
       password: String!
     }
-    type AuthPayload {
+    type Auth {
       user: User!
       token: String
     }
@@ -98,29 +99,22 @@ const setupServer = async () => {
         return result;
       },
       async login(_, args) {
-        console.log(args.data);
         const user = await AppDataSource.manager.findOneBy(User, {
           email: args.data.email
         });
-        console.log(user);
         if (!user) {
           throw new CustomError('Unable to login', 404);
         }
-        const isMatch = await bcrypt.compare(args.data.password, user.password);
-        if (!isMatch) {
-          throw new CustomError('Unable to login', 404);
+        const isPasswordVaid = await bcrypt.compare(
+          args.data.password,
+          user.password
+        );
+        if (!isPasswordVaid) {
+          throw new CustomError('Unable to login', 401);
         }
         return {
-          user: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            birthDate: user.birthDate
-          },
-          token: jwt.sign(
-            { userId: user.id, email: user.email },
-            'thisisasecretkey'
-          )
+          user,
+          token: jwt.sign({ userId: user.id, email: user.email }, secretKey)
         };
       }
     }

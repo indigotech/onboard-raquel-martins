@@ -91,11 +91,9 @@ const setupServer = async () => {
         return addUser(userData);
       },
       async login(_, args) {
-        console.log(args.data);
         const user = await AppDataSource.manager.findOneBy(User, {
           email: args.data.email
         });
-        console.log(user);
         if (!user) {
           throw new CustomError('Unable to login', 404);
         }
