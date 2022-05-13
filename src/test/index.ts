@@ -7,7 +7,7 @@ import { User } from '../entity/User';
 import { QueryCreateUser } from './QueryCreateUser';
 import { queryLogin } from './QueryLogin';
 import * as jwt from 'jsonwebtoken';
-import { secretKey } from 'secretKey';
+import { secretKey } from '../secretKey';
 
 before(async () => {
   config({ path: `${process.cwd()}/test.env` });
@@ -117,13 +117,11 @@ describe('Login Mutation', async () => {
       email: loginInput.email
     });
     const response = await queryLogin(loginInput);
-    const { email, name, birthDate } = response.data.data.login.user;
+    const user = response.data.data.login.user;
     const token = response.data.data.login.token;
     const decoded = jwt.verify(token, secretKey);
     const tokenPayload = decoded as jwt.JwtPayload;
-    expect(email).to.be.equal(findUser.email);
-    expect(name).to.be.equal(findUser.name);
-    expect(birthDate).to.be.equal(findUser.birthDate);
+    expect(user).to.be.deep.equal(findUser);
     expect(tokenPayload.email).to.be.equal(findUser.email);
     expect(tokenPayload.userId).to.be.equal(findUser.id);
   });

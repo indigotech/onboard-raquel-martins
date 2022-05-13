@@ -6,7 +6,7 @@ import { CustomError } from './errors';
 import { containLetter, containDigit, findUserEmail } from './functions';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { secretKey } from 'secretKey';
+import { secretKey } from './secretKey';
 
 const connectToDB = async () => {
   await AppDataSource.initialize();
