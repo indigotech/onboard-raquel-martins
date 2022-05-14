@@ -10,3 +10,5 @@ before(async () => {
 require('./hello.test');
 
 require('./createUser.test');
+
+require('./login.test');

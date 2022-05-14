@@ -29,3 +29,10 @@ export const addUser = async ({ name, email, password, birthDate }) => {
     birthDate
   });
 };
+
+export const findUserData = async (email: string) => {
+  const userEmail = email;
+  return await AppDataSource.manager.findOneBy(User, {
+    email: userEmail
+  });
+};
