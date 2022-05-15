@@ -22,7 +22,7 @@ export const resolvers = {
     async createUser(_, args, context: { req }) {
       const userId = getUserId(context);
       if (!(await findUserId(userId))) {
-        throw new CustomError('unauthorized token', 401);
+        throw new CustomError('Invalid token', 401);
       }
       const password = await bcrypt.hash(args.data.password, 10);
       const user: User = {
@@ -64,11 +64,11 @@ export const resolvers = {
       if (!user) {
         throw new CustomError('Unable to login', 401);
       }
-      const isPasswordVaid = await bcrypt.compare(
+      const isPasswordValid = await bcrypt.compare(
         args.data.password,
         user.password
       );
-      if (!isPasswordVaid) {
+      if (!isPasswordValid) {
         throw new CustomError('Unable to login', 401);
       }
       return {

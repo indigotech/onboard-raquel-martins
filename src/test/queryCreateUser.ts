@@ -20,7 +20,7 @@ export const queryCreateUser = async (input, token) => {
     },
     {
       headers: {
-        authorization: `${token}`
+        Authorization: token
       }
     }
   );

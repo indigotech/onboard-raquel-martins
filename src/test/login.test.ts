@@ -4,14 +4,13 @@ import { User } from '../entity/User';
 import * as jwt from 'jsonwebtoken';
 import { secretKey } from '../secretKey';
 import { queryLogin } from './queryLogin';
-import { queryCreateUser } from './queryCreateUser';
-import { getToken } from '../functions';
+//import { queryCreateUser } from './queryCreateUser';
+import { addUser } from '../functions';
 
-const input: User = {
-  id: '1234',
+const input = {
   name: 'UserTeste2',
   email: 'userteste2@email.com',
-  password: '1234abc',
+  password: '$2b$10$LFFXboyNAx0TjptFWzPDe.5/PnnpDVjTAoEoeS6a5Lzt8cJoTRBl2',
   birthDate: '10-10-2000'
 };
 
@@ -26,8 +25,7 @@ describe('Login Mutation', async () => {
   });
 
   it('should login', async () => {
-    const tokenInput: string = getToken(input);
-    await queryCreateUser(input, tokenInput);
+    await addUser(input);
     const findUser = await AppDataSource.manager.findOneBy(User, {
       email: loginInput.email
     });
@@ -44,8 +42,7 @@ describe('Login Mutation', async () => {
   });
 
   it('should not be able to login with wrong password', async () => {
-    const token: string = getToken(input);
-    await queryCreateUser(input, token);
+    await addUser(input);
     const newLogin = { ...loginInput, password: 'alecrim1' };
     const response = await queryLogin(newLogin);
     expect(response.data.errors[0].message).to.be.equal('Unable to login');
@@ -53,8 +50,7 @@ describe('Login Mutation', async () => {
   });
 
   it('should not be able to login with email that does not exist', async () => {
-    const token: string = getToken(input);
-    await queryCreateUser(input, token);
+    await addUser(input);
     const newLogin = { ...loginInput, email: 'teste@gmail.com' };
     const response = await queryLogin(newLogin);
     expect(response.data.errors[0].message).to.be.equal('Unable to login');
