@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { BASE_URL } from './BASE_URL';
 
-export const queryCreateUser = async (input) => {
-  return await axios.post(`${BASE_URL}`, {
-    query: `
+export const queryCreateUser = async (input, token) => {
+  return await axios.post(
+    `${BASE_URL}`,
+    {
+      query: `
      mutation createUser($data: UserInput!){
      createUser(data: $data){
       id
@@ -12,8 +14,14 @@ export const queryCreateUser = async (input) => {
       birthDate
         }}
           `,
-    variables: {
-      data: input
+      variables: {
+        data: input
+      }
+    },
+    {
+      headers: {
+        authorization: `${token}`
+      }
     }
-  });
+  );
 };

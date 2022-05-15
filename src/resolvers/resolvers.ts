@@ -4,12 +4,13 @@ import {
   containDigit,
   findUserEmail,
   addUser,
-  findUserData
+  findUserData,
+  findUserId,
+  getToken
 } from '../functions';
 import * as bcrypt from 'bcrypt';
 import { User } from '../entity/User';
-import * as jwt from 'jsonwebtoken';
-import { secretKey } from '../secretKey';
+import { getUserId } from '../utils/getUserId';
 
 export const resolvers = {
   Query: {
@@ -18,12 +19,15 @@ export const resolvers = {
     }
   },
   Mutation: {
-    async createUser(_, args) {
+    async createUser(_, args, context: { req }) {
+      const userId = getUserId(context);
+      if (!(await findUserId(userId))) {
+        throw new CustomError('unauthorized token', 401);
+      }
       const password = await bcrypt.hash(args.data.password, 10);
       const user: User = {
         ...args.data
       };
-      console.log('AAA', args.data);
       if (user.password.length < 6) {
         throw new CustomError(
           'Password must contain at least 6 characters',
@@ -69,7 +73,7 @@ export const resolvers = {
       }
       return {
         user,
-        token: jwt.sign({ userId: user.id, email: user.email }, `${secretKey}`)
+        token: getToken(user)
       };
     }
   }
