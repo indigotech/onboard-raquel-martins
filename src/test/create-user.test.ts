@@ -9,6 +9,7 @@ import {
   toHashPassword
 } from '../functions';
 import { tokenInvalid } from './constants/token-invalid';
+import * as sinon from 'sinon';
 
 const input = {
   name: 'UserTeste1',
@@ -29,6 +30,7 @@ describe('CreateUser Mutation', async () => {
   });
 
   afterEach(async () => {
+    sinon.restore();
     await AppDataSource.getRepository(User).delete({});
   });
 
@@ -53,7 +55,7 @@ describe('CreateUser Mutation', async () => {
     expect(userOne.password).to.be.equal(findUserOne.password);
   });
 
-  it.only('should appear if the user passes an existing email', async () => {
+  it('should appear if the user passes an existing email', async () => {
     const user: User = await addUser(input);
     const token: string = generateToken(user);
     const newInput = { ...input2, email: input.email };
