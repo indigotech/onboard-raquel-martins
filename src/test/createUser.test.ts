@@ -3,6 +3,7 @@ import { AppDataSource } from '../data-source';
 import { User } from '../entity/User';
 import { queryCreateUser } from './queryCreateUser';
 import { addUser, getToken } from '../functions';
+import { tokenInvalid } from './tokenInvalid';
 
 const input = {
   name: 'UserTeste1',
@@ -83,5 +84,19 @@ describe('CreateUser Mutation', async () => {
       'The password must contain at least 1 digit'
     );
     expect(response.data.errors[0].extensions.exception.code).to.be.equal(400);
+  });
+
+  it('should appear an error if the token is not sent', async () => {
+    const response = await queryCreateUser(input, '');
+    expect(response.data.errors[0].message).to.be.equal(
+      'Authentication required'
+    );
+    expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
+  });
+
+  it('should appear an error if the token passed does not appear as an existing user id in the database', async () => {
+    const response = await queryCreateUser(input, tokenInvalid);
+    expect(response.data.errors[0].message).to.be.equal('Invalid token');
+    expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
   });
 });
