@@ -1,4 +1,4 @@
-import { secretKey } from './secretKey';
+import { secretKey } from './secret-key';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
 import * as jwt from 'jsonwebtoken';
@@ -38,12 +38,12 @@ export const findUserData = async (email: string) => {
   });
 };
 
-export const findUserId = async (id: string) => {
+export const findUserById = async (id: string) => {
   return await AppDataSource.manager.findOneBy(User, {
     id
   });
 };
 
-export const getToken = (user: User) => {
-  return jwt.sign({ userId: user.id, email: user.email }, `${secretKey}`);
+export const generateToken = (user: User) => {
+  return jwt.sign({ userId: user.id }, `${secretKey}`);
 };

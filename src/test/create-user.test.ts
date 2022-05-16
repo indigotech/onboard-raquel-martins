@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
 import { User } from '../entity/User';
-import { queryCreateUser } from './queryCreateUser';
-import { addUser, getToken } from '../functions';
-import { tokenInvalid } from './tokenInvalid';
+import { queryCreateUser } from './query-create-user';
+import { addUser, generateToken } from '../functions';
+import { tokenInvalid } from './token-invalid';
 
 const input = {
   name: 'UserTeste1',
@@ -25,7 +25,7 @@ describe('CreateUser Mutation', async () => {
 
   it('should create a user', async () => {
     const user: User = await addUser(input);
-    const token: string = getToken(user);
+    const token: string = generateToken(user);
     const response = await queryCreateUser(input2, token);
     const findUser = await AppDataSource.manager.findOneBy(User, {
       email: input2.email
@@ -44,7 +44,7 @@ describe('CreateUser Mutation', async () => {
 
   it('should appear if the user passes an existing email', async () => {
     const user: User = await addUser(input);
-    const token: string = getToken(user);
+    const token: string = generateToken(user);
     await queryCreateUser(input, token);
     const response = await queryCreateUser(input, token);
     expect(response.data.errors[0].message).to.be.equal(
@@ -55,7 +55,7 @@ describe('CreateUser Mutation', async () => {
 
   it('should appear an error if the password is less than 6 characters', async () => {
     const user: User = await addUser(input);
-    const token: string = getToken(user);
+    const token: string = generateToken(user);
     const newInput = { ...input, password: '1' };
     const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal(
@@ -66,7 +66,7 @@ describe('CreateUser Mutation', async () => {
 
   it('should appear an error if the password does not contain 1 letter', async () => {
     const user: User = await addUser(input);
-    const token: string = getToken(user);
+    const token: string = generateToken(user);
     const newInput = { ...input2, password: '123456' };
     const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal(
@@ -77,7 +77,7 @@ describe('CreateUser Mutation', async () => {
 
   it('should appear an error if the password does not contain 1 digit', async () => {
     const user: User = await addUser(input);
-    const token: string = getToken(user);
+    const token: string = generateToken(user);
     const newInput = { ...input2, password: 'abcdef' };
     const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal(

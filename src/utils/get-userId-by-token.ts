@@ -1,6 +1,6 @@
 import { CustomError } from '../errors';
 import * as jwt from 'jsonwebtoken';
-import { secretKey } from '../secretKey';
+import { secretKey } from '../secret-key';
 
 export const getUserId = (request) => {
   const header = request.auth;
