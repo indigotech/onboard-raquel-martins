@@ -4,12 +4,12 @@ import { User } from '../entity/User';
 import * as jwt from 'jsonwebtoken';
 import { secretKey } from '../secret-key';
 import { queryLogin } from './query-login';
-import { addUser } from '../functions';
+import { addUser, toHashPassword } from '../functions';
 
 const input = {
   name: 'UserTeste2',
   email: 'userteste2@email.com',
-  password: '$2b$10$LFFXboyNAx0TjptFWzPDe.5/PnnpDVjTAoEoeS6a5Lzt8cJoTRBl2',
+  password: '1234abc',
   birthDate: '10-10-2000'
 };
 
@@ -24,7 +24,11 @@ describe('Login Mutation', async () => {
   });
 
   it('should login', async () => {
-    await addUser(input);
+    const userOne = {
+      ...input,
+      password: await toHashPassword(input.password)
+    };
+    await addUser(userOne);
     const findUser = await AppDataSource.manager.findOneBy(User, {
       email: loginInput.email
     });
@@ -40,7 +44,11 @@ describe('Login Mutation', async () => {
   });
 
   it('should not be able to login with wrong password', async () => {
-    await addUser(input);
+    const userOne = {
+      ...input,
+      password: await toHashPassword(input.password)
+    };
+    await addUser(userOne);
     const newLogin = { ...loginInput, password: 'alecrim1' };
     const response = await queryLogin(newLogin);
     expect(response.data.errors[0].message).to.be.equal('Unable to login');
@@ -48,7 +56,11 @@ describe('Login Mutation', async () => {
   });
 
   it('should not be able to login with email that does not exist', async () => {
-    await addUser(input);
+    const userOne = {
+      ...input,
+      password: await toHashPassword(input.password)
+    };
+    await addUser(userOne);
     const newLogin = { ...loginInput, email: 'teste@gmail.com' };
     const response = await queryLogin(newLogin);
     expect(response.data.errors[0].message).to.be.equal('Unable to login');

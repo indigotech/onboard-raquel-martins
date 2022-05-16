@@ -2,6 +2,7 @@ import { secretKey } from './secret-key';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
 import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
 
 export const containLetter = (pass: string): boolean => {
   const letters = new RegExp('[A-Za-z]');
@@ -46,4 +47,8 @@ export const findUserById = async (id: string) => {
 
 export const generateToken = (user: User) => {
   return jwt.sign({ userId: user.id }, `${secretKey}`);
+};
+
+export const toHashPassword = async (password: string) => {
+  return await bcrypt.hash(password, 10);
 };

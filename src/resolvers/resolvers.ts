@@ -6,11 +6,12 @@ import {
   addUser,
   findUserData,
   findUserById,
-  generateToken
+  generateToken,
+  toHashPassword
 } from '../functions';
 import * as bcrypt from 'bcrypt';
 import { User } from '../entity/User';
-import { getUserId } from '../utils/get-userId-by-token';
+import { getUserIdByToken } from '../utils/get-userId-by-token';
 
 export const resolvers = {
   Query: {
@@ -20,11 +21,11 @@ export const resolvers = {
   },
   Mutation: {
     async createUser(_, args, context: { req }) {
-      const userId = getUserId(context);
+      const userId = getUserIdByToken(context);
       if (!(await findUserById(userId))) {
         throw new CustomError('Invalid token', 401);
       }
-      const password = await bcrypt.hash(args.data.password, 10);
+      const password = await toHashPassword(args.data.password);
       const user: User = {
         ...args.data
       };
