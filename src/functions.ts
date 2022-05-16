@@ -24,13 +24,8 @@ export const findUserEmail = async (email: string): Promise<boolean> => {
   return !!findUser;
 };
 
-export const addUser = async ({ name, email, password, birthDate }) => {
-  return AppDataSource.manager.save(User, {
-    name,
-    email,
-    password,
-    birthDate
-  });
+export const addUser = async (user) => {
+  return AppDataSource.manager.save(User, user);
 };
 
 export const findUserData = async (email: string) => {

@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { BASE_URL } from './base-url';
+import { BASE_URL } from './constants/base-url';
 
-export const queryCreateUser = async (input, token) => {
-  return await axios.post(
+export const queryCreateUser = (input, token) => {
+  return axios.post(
     `${BASE_URL}`,
     {
       query: `
@@ -12,7 +12,8 @@ export const queryCreateUser = async (input, token) => {
       name
       email
       birthDate
-        }}
+        }
+      }
           `,
       variables: {
         data: input

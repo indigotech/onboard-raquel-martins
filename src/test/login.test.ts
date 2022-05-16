@@ -20,15 +20,19 @@ const loginInput = {
 
 describe('Login Mutation', async () => {
   beforeEach(async () => {
-    await AppDataSource.getRepository(User).delete({});
-  });
-
-  it('should login', async () => {
+    AppDataSource.getRepository(User);
     const userOne = {
       ...input,
       password: await toHashPassword(input.password)
     };
     await addUser(userOne);
+  });
+
+  afterEach(async () => {
+    await AppDataSource.getRepository(User).delete({});
+  });
+
+  it('should login', async () => {
     const findUser = await AppDataSource.manager.findOneBy(User, {
       email: loginInput.email
     });
@@ -44,11 +48,6 @@ describe('Login Mutation', async () => {
   });
 
   it('should not be able to login with wrong password', async () => {
-    const userOne = {
-      ...input,
-      password: await toHashPassword(input.password)
-    };
-    await addUser(userOne);
     const newLogin = { ...loginInput, password: 'alecrim1' };
     const response = await queryLogin(newLogin);
     expect(response.data.errors[0].message).to.be.equal('Unable to login');
@@ -56,11 +55,6 @@ describe('Login Mutation', async () => {
   });
 
   it('should not be able to login with email that does not exist', async () => {
-    const userOne = {
-      ...input,
-      password: await toHashPassword(input.password)
-    };
-    await addUser(userOne);
     const newLogin = { ...loginInput, email: 'teste@gmail.com' };
     const response = await queryLogin(newLogin);
     expect(response.data.errors[0].message).to.be.equal('Unable to login');

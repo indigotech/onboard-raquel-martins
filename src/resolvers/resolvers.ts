@@ -53,12 +53,12 @@ export const resolvers = {
       if (await findUserEmail(user.email)) {
         throw new CustomError('Email already registered', 409);
       }
-      const userData = {
+      const userData: User = {
         ...user,
         password
       };
 
-      return await addUser(userData);
+      return addUser(userData);
     },
     async login(_, args) {
       const user = await findUserData(args.data.email);

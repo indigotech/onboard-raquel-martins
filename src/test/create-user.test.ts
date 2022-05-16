@@ -2,8 +2,13 @@ import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
 import { User } from '../entity/User';
 import { queryCreateUser } from './query-create-user';
-import { addUser, generateToken } from '../functions';
-import { tokenInvalid } from './token-invalid';
+import {
+  addUser,
+  findUserById,
+  generateToken,
+  toHashPassword
+} from '../functions';
+import { tokenInvalid } from './constants/token-invalid';
 
 const input = {
   name: 'UserTeste1',
@@ -20,33 +25,39 @@ const input2 = {
 
 describe('CreateUser Mutation', async () => {
   beforeEach(async () => {
+    AppDataSource.getRepository(User);
+  });
+
+  afterEach(async () => {
     await AppDataSource.getRepository(User).delete({});
   });
 
   it('should create a user', async () => {
-    const user: User = await addUser(input);
+    const userOne = {
+      ...input,
+      password: await toHashPassword(input.password)
+    };
+    const user = await addUser(userOne);
     const token: string = generateToken(user);
     const response = await queryCreateUser(input2, token);
     const findUser = await AppDataSource.manager.findOneBy(User, {
       email: input2.email
     });
-
-    delete input2.password;
-    delete findUser.password;
-    delete findUser.id;
+    const findUserOne = await findUserById(user.id);
     const { id, ...userFields } = response.data.data.createUser;
-    expect(userFields).to.be.deep.eq(input2);
     expect(id).to.be.a('string');
-    expect(userFields.name).to.be.equal(findUser.name);
+    expect(userFields.name).to.be.deep.equal(findUser.name);
     expect(userFields.email).to.be.equal(findUser.email);
     expect(userFields.birthDate).to.be.equal(findUser.birthDate);
+    expect(id).to.be.equal(findUser.id);
+    expect(userOne.password).to.be.equal(findUserOne.password);
   });
 
-  it('should appear if the user passes an existing email', async () => {
+  it.only('should appear if the user passes an existing email', async () => {
     const user: User = await addUser(input);
     const token: string = generateToken(user);
-    await queryCreateUser(input, token);
-    const response = await queryCreateUser(input, token);
+    const newInput = { ...input2, email: input.email };
+    const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal(
       'Email already registered'
     );
@@ -56,7 +67,7 @@ describe('CreateUser Mutation', async () => {
   it('should appear an error if the password is less than 6 characters', async () => {
     const user: User = await addUser(input);
     const token: string = generateToken(user);
-    const newInput = { ...input, password: '1' };
+    const newInput = { ...input2, password: '1' };
     const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal(
       'Password must contain at least 6 characters'
@@ -87,7 +98,7 @@ describe('CreateUser Mutation', async () => {
   });
 
   it('should appear an error if the token is not sent', async () => {
-    const response = await queryCreateUser(input, '');
+    const response = await queryCreateUser(input2, '');
     expect(response.data.errors[0].message).to.be.equal(
       'Authentication required'
     );
@@ -95,7 +106,7 @@ describe('CreateUser Mutation', async () => {
   });
 
   it('should appear an error if the token passed does not appear as an existing user id in the database', async () => {
-    const response = await queryCreateUser(input, tokenInvalid);
+    const response = await queryCreateUser(input2, tokenInvalid);
     expect(response.data.errors[0].message).to.be.equal('Invalid token');
     expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
   });
