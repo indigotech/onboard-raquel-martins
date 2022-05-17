@@ -51,13 +51,13 @@ describe('Login Mutation', async () => {
     const newLogin = { ...loginInput, password: 'alecrim1' };
     const response = await queryLogin(newLogin);
     expect(response.data.errors[0].message).to.be.equal('Unable to login');
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
+    expect(response.data.errors[0].code).to.be.equal(401);
   });
 
   it('should not be able to login with email that does not exist', async () => {
     const newLogin = { ...loginInput, email: 'teste@gmail.com' };
     const response = await queryLogin(newLogin);
     expect(response.data.errors[0].message).to.be.equal('Unable to login');
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
+    expect(response.data.errors[0].code).to.be.equal(401);
   });
 });

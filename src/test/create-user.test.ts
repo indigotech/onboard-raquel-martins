@@ -60,7 +60,7 @@ describe('CreateUser Mutation', async () => {
     expect(response.data.errors[0].message).to.be.equal(
       'Email already registered'
     );
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(409);
+    expect(response.data.errors[0].code).to.be.equal(409);
   });
 
   it('should appear an error if the password is less than 6 characters', async () => {
@@ -71,7 +71,7 @@ describe('CreateUser Mutation', async () => {
     expect(response.data.errors[0].message).to.be.equal(
       'Password must contain at least 6 characters'
     );
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(400);
+    expect(response.data.errors[0].code).to.be.equal(400);
   });
 
   it('should appear an error if the password does not contain 1 letter', async () => {
@@ -82,7 +82,7 @@ describe('CreateUser Mutation', async () => {
     expect(response.data.errors[0].message).to.be.equal(
       'The password must contain at least 1 letter'
     );
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(400);
+    expect(response.data.errors[0].code).to.be.equal(400);
   });
 
   it('should appear an error if the password does not contain 1 digit', async () => {
@@ -93,7 +93,7 @@ describe('CreateUser Mutation', async () => {
     expect(response.data.errors[0].message).to.be.equal(
       'The password must contain at least 1 digit'
     );
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(400);
+    expect(response.data.errors[0].code).to.be.equal(400);
   });
 
   it('should appear an error if the token is not sent', async () => {
@@ -101,7 +101,7 @@ describe('CreateUser Mutation', async () => {
     expect(response.data.errors[0].message).to.be.equal(
       'Authentication required'
     );
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
+    expect(response.data.errors[0].code).to.be.equal(401);
   });
 
   it('should appear an error if the email is of an invalid format', async () => {

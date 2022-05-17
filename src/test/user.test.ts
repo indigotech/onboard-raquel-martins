@@ -43,7 +43,7 @@ describe('query user', async () => {
     const token: string = generateToken(user);
     const response = await queryGetUser(invalidId, token);
     expect(response.data.errors[0].message).to.be.equal('User not found.');
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(404);
+    expect(response.data.errors[0].code).to.be.equal(404);
   });
 
   it('should appear an error if token is invalid', async () => {
@@ -54,7 +54,7 @@ describe('query user', async () => {
     const user = await addUser(userOne);
     const response = await queryGetUser(user.id, invalidToken);
     expect(response.data.errors[0].message).to.be.equal('Invalid token');
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
+    expect(response.data.errors[0].code).to.be.equal(401);
   });
 
   it('an error should appear if authentication is not passed', async () => {
@@ -67,6 +67,6 @@ describe('query user', async () => {
     expect(response.data.errors[0].message).to.be.equal(
       'Authentication required'
     );
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
+    expect(response.data.errors[0].code).to.be.equal(401);
   });
 });
