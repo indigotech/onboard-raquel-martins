@@ -23,7 +23,8 @@ export const resolvers = {
       }
 
       const userId = getUserIdByToken(context);
-      if (!(await findUserById(userId))) {
+     
+      if(userId !== args.id){
         throw new CustomError('Invalid token', 401);
       }
 
