@@ -98,6 +98,6 @@ describe('CreateUser Mutation', async () => {
     const newInput = { ...input2, email: 'teste' };
     const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal('Invalid email format');
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(400);
+    expect(response.data.errors[0].code).to.be.equal(400);
   });
 });
