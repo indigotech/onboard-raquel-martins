@@ -41,8 +41,6 @@
     "@types/chai": "4.3.1",
     "@types/jsonwebtoken": "8.5.8",
     "@types/mocha": "9.1.1",
-    "@types/jsonwebtoken": "8.5.8",
-    "@types/mocha": "^9.1.1",
     "@typescript-eslint/eslint-plugin": "5.22.0",
     "@typescript-eslint/parser": "5.22.0",
     "chai": "4.3.6",
