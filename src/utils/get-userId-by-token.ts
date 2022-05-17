@@ -1,6 +1,5 @@
 import { CustomError } from '../errors';
 import * as jwt from 'jsonwebtoken';
-import { secretKey } from '../secret-key';
 
 export const getUserIdByToken = (context) => {
   const authenticationToken = context.auth;
@@ -9,6 +8,6 @@ export const getUserIdByToken = (context) => {
   }
   const token = authenticationToken.replace('Bearer', '');
 
-  const decoded = jwt.verify(token, `${secretKey}`);
+  const decoded = jwt.verify(token, `${process.env.SECRET}`);
   return decoded['userId'];
 };

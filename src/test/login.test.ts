@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
 import { User } from '../entity/User';
 import * as jwt from 'jsonwebtoken';
-import { secretKey } from '../secret-key';
 import { queryLogin } from './query-login';
 import { addUser, toHashPassword } from '../functions';
 
@@ -41,7 +40,7 @@ describe('Login Mutation', async () => {
     delete findUser.password;
     delete user.password;
     const token = response.data.data.login.token;
-    const decoded = jwt.verify(token, `${secretKey}`);
+    const decoded = jwt.verify(token, `${process.env.SECRET}`);
     const tokenPayload = decoded as jwt.JwtPayload;
     expect(user).to.be.deep.equal(findUser);
     expect(tokenPayload.userId).to.be.equal(findUser.id);
