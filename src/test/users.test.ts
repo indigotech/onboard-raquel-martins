@@ -23,8 +23,8 @@ describe('query users', async () => {
     };
     const user = await addUser(userOne);
     const token: string = generateToken(user);
-    const response = await queryGetAllUsers(token);
-    const listUsersResponse = response.data.data.users;
+    const response = await queryGetAllUsers(token, 1, 10);
+    const listUsersResponse = response.data.data.users.users;
     delete user.password;
     arrUsers.push(user);
     expect(listUsersResponse).to.be.deep.equal(arrUsers);
@@ -36,7 +36,7 @@ describe('query users', async () => {
       password: await toHashPassword(input.password)
     };
     await addUser(userOne);
-    const response = await queryGetAllUsers(invalidToken);
+    const response = await queryGetAllUsers(invalidToken, 1, 10);
     expect(response.data.errors[0].message).to.be.equal('Invalid token');
     expect(response.data.errors[0].code).to.be.equal(401);
   });
@@ -47,7 +47,7 @@ describe('query users', async () => {
       password: await toHashPassword(input.password)
     };
     await addUser(userOne);
-    const response = await queryGetAllUsers('');
+    const response = await queryGetAllUsers('', 1, 10);
     expect(response.data.errors[0].message).to.be.equal(
       'Authentication required'
     );

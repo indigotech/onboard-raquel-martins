@@ -56,11 +56,16 @@ export const toHashPassword = (password: string) => {
   return bcrypt.hash(password, 10);
 };
 
-export const getUsers = async (quantity: number) => {
-  return await AppDataSource.getRepository(User).find({
+export const getAllUsers = (quantity: number, page: number) => {
+  return AppDataSource.getRepository(User).find({
     order: {
       name: 'ASC'
     },
-    take: quantity
+    take: quantity,
+    skip: quantity * (page - 1)
   });
+};
+
+export const getTotalNumbersOfUser = () => {
+  return AppDataSource.getRepository(User).count();
 };

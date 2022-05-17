@@ -11,7 +11,8 @@ import {
   generateToken,
   toHashPassword,
   validateEmail,
-  getUsers
+  getAllUsers,
+  getTotalNumbersOfUser
 } from '../functions';
 import { getUserIdByToken } from '../utils/get-userId-by-token';
 
@@ -34,7 +35,22 @@ export const resolvers = {
         throw new CustomError('Invalid token', 401);
       }
       const quantity: number = args.quantity;
-      return getUsers(quantity);
+      const page: number = args.page;
+      const users = await getAllUsers(quantity, page);
+      const totalUsers = await getTotalNumbersOfUser();
+
+      return {
+        users,
+        count: totalUsers,
+        before:
+          page === 1
+            ? 0
+            : quantity * (page - 1) > totalUsers
+            ? 0
+            : quantity * (page - 1),
+        after: page * quantity > totalUsers ? 0 : totalUsers - page * quantity,
+        page: page
+      };
     }
   },
   Mutation: {
