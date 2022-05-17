@@ -10,7 +10,8 @@ import {
   findUserEmail,
   generateToken,
   toHashPassword,
-  validateEmail
+  validateEmail,
+  getAllUsers
 } from '../functions';
 import { getUserIdByToken } from '../utils/get-userId-by-token';
 
@@ -28,6 +29,15 @@ export const resolvers = {
       }
 
       return user;
+    },
+    users: async (_, args, context: { req }) => {
+      const userId = getUserIdByToken(context);
+      if (!(await findUserById(userId))) {
+        throw new CustomError('Invalid token', 401);
+      }
+      const quantity: number = args.quantity;
+
+      return await getAllUsers(quantity);
     }
   },
   Mutation: {
@@ -78,14 +88,14 @@ export const resolvers = {
     async login(_, args) {
       const user = await findUserData(args.data.email);
       if (!user) {
-        throw new CustomError('Unable to login', 401);
+        throw new CustomError('Unregistered user email', 401);
       }
       const isPasswordValid = await bcrypt.compare(
         args.data.password,
         user.password
       );
       if (!isPasswordValid) {
-        throw new CustomError('Unable to login', 401);
+        throw new CustomError('Password incorrect', 401);
       }
       return {
         user,
