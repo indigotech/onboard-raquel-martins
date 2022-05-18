@@ -45,10 +45,10 @@ export const resolvers = {
           page === 1
             ? 0
             : quantity * (page - 1) > totalUsers
-            ? 0
+            ? totalUsers
             : quantity * (page - 1),
         after: page * quantity > totalUsers ? 0 : totalUsers - page * quantity,
-        page: page
+        page
       };
     }
   },
