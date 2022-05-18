@@ -2,21 +2,9 @@ import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
 import { User } from '../entity/User';
 import * as jwt from 'jsonwebtoken';
-import { secretKey } from '../secret-key';
 import { queryLogin } from './query-login';
 import { addUser, toHashPassword } from '../functions';
-
-const input = {
-  name: 'UserTeste2',
-  email: 'userteste2@email.com',
-  password: '1234abc',
-  birthDate: '10-10-2000'
-};
-
-const loginInput = {
-  email: 'userteste2@email.com',
-  password: '1234abc'
-};
+import { input, loginInput } from './constants';
 
 describe('Login Mutation', async () => {
   beforeEach(async () => {
@@ -41,7 +29,7 @@ describe('Login Mutation', async () => {
     delete findUser.password;
     delete user.password;
     const token = response.data.data.login.token;
-    const decoded = jwt.verify(token, `${secretKey}`);
+    const decoded = jwt.verify(token, process.env.SECRET);
     const tokenPayload = decoded as jwt.JwtPayload;
     expect(user).to.be.deep.equal(findUser);
     expect(tokenPayload.userId).to.be.equal(findUser.id);
@@ -51,13 +39,13 @@ describe('Login Mutation', async () => {
     const newLogin = { ...loginInput, password: 'alecrim1' };
     const response = await queryLogin(newLogin);
     expect(response.data.errors[0].message).to.be.equal('Unable to login');
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
+    expect(response.data.errors[0].code).to.be.equal(401);
   });
 
   it('should not be able to login with email that does not exist', async () => {
     const newLogin = { ...loginInput, email: 'teste@gmail.com' };
     const response = await queryLogin(newLogin);
     expect(response.data.errors[0].message).to.be.equal('Unable to login');
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
+    expect(response.data.errors[0].code).to.be.equal(401);
   });
 });

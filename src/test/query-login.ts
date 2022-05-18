@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BASE_URL } from './constants/base-url';
+import { BASE_URL } from './constants';
 
 export const queryLogin = async (input) => {
   return await axios.post(`${BASE_URL}`, {

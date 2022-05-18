@@ -1,4 +1,3 @@
-import { secretKey } from './secret-key';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
 import * as jwt from 'jsonwebtoken';
@@ -50,7 +49,7 @@ export const findUserById = (id: string) => {
 };
 
 export const generateToken = (user: User) => {
-  return jwt.sign({ userId: user.id }, `${secretKey}`);
+  return jwt.sign({ userId: user.id }, process.env.SECRET);
 };
 
 export const toHashPassword = (password: string) => {

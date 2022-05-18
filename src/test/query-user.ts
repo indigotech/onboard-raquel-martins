@@ -1,22 +1,22 @@
 import axios from 'axios';
 import { BASE_URL } from './constants';
 
-export const queryCreateUser = (input, token) => {
+export const queryGetUser = (id, token) => {
   return axios.post(
     `${BASE_URL}`,
     {
       query: `
-     mutation createUser($data: UserInput!){
-     createUser(data: $data){
+     query user($id: String){
+     user(id: $id){
       id
       name
       email
       birthDate
         }
       }
-          `,
+    `,
       variables: {
-        data: input
+        id
       }
     },
     {
