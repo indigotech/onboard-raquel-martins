@@ -11,7 +11,7 @@ import {
   generateToken,
   toHashPassword,
   validateEmail,
-  getAllUsers
+  getUsers
 } from '../functions';
 import { getUserIdByToken } from '../utils/get-userId-by-token';
 
@@ -32,12 +32,12 @@ export const resolvers = {
     },
     users: async (_, args, context: { req }) => {
       const userId = getUserIdByToken(context);
-      if (!(await findUserById(userId))) {
+      if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
       const quantity: number = args.quantity;
 
-      return await getAllUsers(quantity);
+      return await getUsers(quantity);
     }
   },
   Mutation: {
