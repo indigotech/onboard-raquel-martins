@@ -32,7 +32,7 @@ describe('query user', async () => {
     expect(user).to.be.deep.equal(userResponse);
   });
 
-  it.only('should appear an error if user id does not exist in data base', async () => {
+  it('should appear an error if user id does not exist in data base', async () => {
     const response = await queryGetUser(invalidId, token);
     expect(response.data.errors[0].message).to.be.equal('User not found.');
     expect(response.data.errors[0].code).to.be.equal(404);
