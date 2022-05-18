@@ -8,8 +8,7 @@ import {
   generateToken,
   toHashPassword
 } from '../functions';
-import { invalidToken, input, input2 } from './constants';
-import * as sinon from 'sinon';
+import { input, input2 } from './constants';
 
 describe('CreateUser Mutation', async () => {
   beforeEach(async () => {
@@ -97,10 +96,8 @@ describe('CreateUser Mutation', async () => {
     const user: User = await addUser(input);
     const token: string = generateToken(user);
     const newInput = { ...input2, email: 'teste' };
-    const response = await queryCreateUser(newInput, token)
-    expect(response.data.errors[0].message).to.be.equal(
-      'Invalid email format'
-    );
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(400)
-  })
+    const response = await queryCreateUser(newInput, token);
+    expect(response.data.errors[0].message).to.be.equal('Invalid email format');
+    expect(response.data.errors[0].extensions.exception.code).to.be.equal(400);
+  });
 });
