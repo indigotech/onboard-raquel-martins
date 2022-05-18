@@ -23,3 +23,11 @@ export const loginInput = {
   email: 'userteste@email.com',
   password: '1234abc'
 };
+
+export const fakeUser = {
+  id: invalidId,
+  name: 'UserTeste2',
+  email: 'userteste2@email.com',
+  password: '1234abc',
+  birthDate: '10-10-2000'
+};
