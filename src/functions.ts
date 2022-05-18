@@ -56,16 +56,12 @@ export const toHashPassword = (password: string) => {
   return bcrypt.hash(password, 10);
 };
 
-export const getAllUsers = (quantity: number, page: number) => {
-  return AppDataSource.getRepository(User).find({
+export const getUsers = (quantity: number, page: number) => {
+  return AppDataSource.getRepository(User).findAndCount({
     order: {
       name: 'ASC'
     },
     take: quantity,
     skip: quantity * (page - 1)
   });
-};
-
-export const getTotalNumbersOfUser = () => {
-  return AppDataSource.getRepository(User).count();
 };

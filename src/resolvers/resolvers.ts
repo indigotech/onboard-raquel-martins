@@ -11,8 +11,7 @@ import {
   generateToken,
   toHashPassword,
   validateEmail,
-  getAllUsers,
-  getTotalNumbersOfUser
+  getUsers
 } from '../functions';
 import { getUserIdByToken } from '../utils/get-userId-by-token';
 
@@ -36,12 +35,12 @@ export const resolvers = {
       }
       const quantity: number = args.quantity;
       const page: number = args.page;
-      const users = await getAllUsers(quantity, page);
-      const totalUsers = await getTotalNumbersOfUser();
+      const users = await getUsers(quantity, page);
+      const totalUsers = users[1];
 
       return {
-        users,
-        count: totalUsers,
+        users: users[0],
+        count: users[1],
         before:
           page === 1
             ? 0
