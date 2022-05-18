@@ -8,8 +8,6 @@ import {
   generateToken,
   toHashPassword
 } from '../functions';
-import { tokenInvalid } from './constants/token-invalid';
-import * as sinon from 'sinon';
 
 const input = {
   name: 'UserTeste1',
@@ -30,7 +28,6 @@ describe('CreateUser Mutation', async () => {
   });
 
   afterEach(async () => {
-    sinon.restore();
     await AppDataSource.getRepository(User).delete({});
   });
 
@@ -107,9 +104,14 @@ describe('CreateUser Mutation', async () => {
     expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
   });
 
-  it('should appear an error if the token passed does not appear as an existing user id in the database', async () => {
-    const response = await queryCreateUser(input2, tokenInvalid);
-    expect(response.data.errors[0].message).to.be.equal('Invalid token');
-    expect(response.data.errors[0].extensions.exception.code).to.be.equal(401);
-  });
+  it('should appear an error if the email is of an invalid format', async () => {
+    const user: User = await addUser(input);
+    const token: string = generateToken(user);
+    const newInput = { ...input2, email: 'teste' };
+    const response = await queryCreateUser(newInput, token)
+    expect(response.data.errors[0].message).to.be.equal(
+      'Invalid email format'
+    );
+    expect(response.data.errors[0].extensions.exception.code).to.be.equal(400)
+  })
 });

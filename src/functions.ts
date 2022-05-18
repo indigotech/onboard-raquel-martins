@@ -24,18 +24,18 @@ export const findUserEmail = async (email: string): Promise<boolean> => {
   return !!findUser;
 };
 
-export const addUser = async (user) => {
+export const addUser = (user) => {
   return AppDataSource.manager.save(User, user);
 };
 
-export const findUserData = async (email: string) => {
-  return await AppDataSource.manager.findOneBy(User, {
+export const findUserData = (email: string) => {
+  return AppDataSource.manager.findOneBy(User, {
     email
   });
 };
 
-export const findUserById = async (id: string) => {
-  return await AppDataSource.manager.findOneBy(User, {
+export const findUserById = (id: string) => {
+  return AppDataSource.manager.findOneBy(User, {
     id
   });
 };
@@ -44,6 +44,12 @@ export const generateToken = (user: User) => {
   return jwt.sign({ userId: user.id }, `${secretKey}`);
 };
 
-export const toHashPassword = async (password: string) => {
-  return await bcrypt.hash(password, 10);
+export const toHashPassword = (password: string) => {
+  return bcrypt.hash(password, 10);
 };
+
+export const validateEmail = (email: string) => { 
+  const isEmailValid = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+  return isEmailValid.test(email)
+   
+}

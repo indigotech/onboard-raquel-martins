@@ -7,7 +7,8 @@ import {
   findUserData,
   findUserById,
   generateToken,
-  toHashPassword
+  toHashPassword,
+  validateEmail
 } from '../functions';
 import * as bcrypt from 'bcrypt';
 import { User } from '../entity/User';
@@ -57,6 +58,10 @@ export const resolvers = {
         ...user,
         password
       };
+
+      if(!validateEmail(user.email)){
+        throw new CustomError('Invalid email format', 400)
+      }
 
       return addUser(userData);
     },
