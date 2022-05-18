@@ -49,7 +49,7 @@ export const findUserById = (id: string) => {
 };
 
 export const generateToken = (user: User) => {
-  return jwt.sign({ userId: user.id }, `${process.env.SECRET}`);
+  return jwt.sign({ userId: user.id }, process.env.SECRET);
 };
 
 export const toHashPassword = (password: string) => {

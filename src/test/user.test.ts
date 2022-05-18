@@ -2,16 +2,8 @@ import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
 import { User } from '../entity/User';
 import { addUser, toHashPassword, generateToken } from '../functions';
-import { invalidId } from './constants/invalid-id';
-import { invalidToken } from './constants/invalid-token';
+import { invalidId, invalidToken, input } from './constants';
 import { queryGetUser } from './query-user';
-
-const input = {
-  name: 'User',
-  email: 'userteste@email.com',
-  password: '1234abc',
-  birthDate: '10-10-2000'
-};
 
 describe('query user', async () => {
   beforeEach(async () => {

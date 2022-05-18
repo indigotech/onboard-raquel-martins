@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BASE_URL } from './constants/base-url';
+import { BASE_URL } from './constants';
 
 export const queryGetUser = (id, token) => {
   return axios.post(

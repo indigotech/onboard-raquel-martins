@@ -8,19 +8,8 @@ import {
   generateToken,
   toHashPassword
 } from '../functions';
-
-const input = {
-  name: 'UserTeste1',
-  email: 'userteste1@email.com',
-  password: '1234abc',
-  birthDate: '10-10-2000'
-};
-const input2 = {
-  name: 'UserTeste2',
-  email: 'userteste2@email.com',
-  password: '1234abc',
-  birthDate: '10-10-2000'
-};
+import { invalidToken, input, input2 } from './constants';
+import * as sinon from 'sinon';
 
 describe('CreateUser Mutation', async () => {
   beforeEach(async () => {

@@ -13,7 +13,7 @@ export const setupServer = async () => {
         auth
       };
     },
-    formatError: formatError
+    formatError
   });
 
   const { url } = await server.listen(process.env.PORT);

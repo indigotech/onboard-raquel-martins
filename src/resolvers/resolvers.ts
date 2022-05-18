@@ -17,15 +17,14 @@ import { getUserIdByToken } from '../utils/get-userId-by-token';
 export const resolvers = {
   Query: {
     user: async (_, args, context: { req }) => {
+      const userId = getUserIdByToken(context);
+
+      if (userId !== args.id) {
+        throw new CustomError('Invalid token', 401);
+      }
       const user = await findUserById(args.id);
       if (!user) {
         throw new CustomError('User not found.', 404);
-      }
-
-      const userId = getUserIdByToken(context);
-     
-      if(userId !== args.id){
-        throw new CustomError('Invalid token', 401);
       }
 
       return user;

@@ -8,6 +8,6 @@ export const getUserIdByToken = (context) => {
   }
   const token = authenticationToken.replace('Bearer', '');
 
-  const decoded = jwt.verify(token, `${process.env.SECRET}`);
+  const decoded = jwt.verify(token, process.env.SECRET);
   return decoded['userId'];
 };

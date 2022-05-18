@@ -4,18 +4,7 @@ import { User } from '../entity/User';
 import * as jwt from 'jsonwebtoken';
 import { queryLogin } from './query-login';
 import { addUser, toHashPassword } from '../functions';
-
-const input = {
-  name: 'UserTeste2',
-  email: 'userteste2@email.com',
-  password: '1234abc',
-  birthDate: '10-10-2000'
-};
-
-const loginInput = {
-  email: 'userteste2@email.com',
-  password: '1234abc'
-};
+import { input, loginInput } from './constants';
 
 describe('Login Mutation', async () => {
   beforeEach(async () => {
@@ -40,7 +29,7 @@ describe('Login Mutation', async () => {
     delete findUser.password;
     delete user.password;
     const token = response.data.data.login.token;
-    const decoded = jwt.verify(token, `${process.env.SECRET}`);
+    const decoded = jwt.verify(token, process.env.SECRET);
     const tokenPayload = decoded as jwt.JwtPayload;
     expect(user).to.be.deep.equal(findUser);
     expect(tokenPayload.userId).to.be.equal(findUser.id);
