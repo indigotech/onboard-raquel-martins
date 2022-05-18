@@ -1,17 +1,17 @@
+import * as bcrypt from 'bcrypt';
+import { User } from '../entity/User';
 import { CustomError } from '../errors';
 import {
-  containLetter,
-  containDigit,
-  findUserEmail,
   addUser,
-  findUserData,
+  containDigit,
+  containLetter,
   findUserById,
+  findUserData,
+  findUserEmail,
   generateToken,
   toHashPassword,
   validateEmail
 } from '../functions';
-import * as bcrypt from 'bcrypt';
-import { User } from '../entity/User';
 import { getUserIdByToken } from '../utils/get-userId-by-token';
 
 export const resolvers = {
@@ -59,8 +59,8 @@ export const resolvers = {
         password
       };
 
-      if(!validateEmail(user.email)){
-        throw new CustomError('Invalid email format', 400)
+      if (!validateEmail(user.email)) {
+        throw new CustomError('Invalid email format', 400);
       }
 
       return addUser(userData);
