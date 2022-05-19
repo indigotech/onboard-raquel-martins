@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { User } from '../entity/User';
+import { User } from '../entity/user';
 import { CustomError } from '../errors';
 import {
   addUser,
@@ -8,12 +8,15 @@ import {
   findUserById,
   findUserData,
   findUserEmail,
+  validateEmail,
+  getCountUsers,
+  addAddress,
   generateToken,
   toHashPassword,
-  validateEmail,
-  getUsers
+  getUsersAndAddress
 } from '../functions';
 import { getUserIdByToken } from '../utils/get-userId-by-token';
+import { Address } from '../entity/address';
 
 export const resolvers = {
   Query: {
@@ -35,16 +38,14 @@ export const resolvers = {
       }
       const quantity: number = args.quantity;
       const page: number = args.page;
-      const users = await getUsers(quantity, page);
-      const totalUsers = users[1];
+      const users = await getUsersAndAddress(quantity, page);
+      const totalUsers = await getCountUsers();
 
       return {
-        users: users[0],
-        count: users[1],
+        users: users,
+        count: totalUsers,
         before:
-          page === 1
-            ? 0
-            : quantity * (page - 1) > totalUsers
+          quantity * (page - 1) > totalUsers
             ? totalUsers
             : quantity * (page - 1),
         after: page * quantity > totalUsers ? 0 : totalUsers - page * quantity,
@@ -113,6 +114,14 @@ export const resolvers = {
         user,
         token: generateToken(user)
       };
+    },
+    async createAddress(_, args, context: { req }) {
+      const userId = getUserIdByToken(context);
+      if (!userId) {
+        throw new CustomError('Invalid token', 401);
+      }
+      const address: Address = args.data;
+      return addAddress(address);
     }
   }
 };

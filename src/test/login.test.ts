@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
-import { User } from '../entity/User';
+import { User } from '../entity/user';
 import * as jwt from 'jsonwebtoken';
 import { queryLogin } from './query-login';
 import { addUser, toHashPassword } from '../functions';

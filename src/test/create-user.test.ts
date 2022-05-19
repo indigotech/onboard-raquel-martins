@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
-import { User } from '../entity/User';
+import { User } from '../entity/user';
 import { queryCreateUser } from './query-create-user';
 import {
   addUser,

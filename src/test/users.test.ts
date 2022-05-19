@@ -1,6 +1,6 @@
 //import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
-import { User } from '../entity/User';
+import { User } from '../entity/user';
 import { addUser, toHashPassword, generateToken } from '../functions';
 import { queryGetAllUsers } from './query-users';
 import { input } from './constants/input';
@@ -33,7 +33,6 @@ describe('query users', async () => {
   });
 
   it('should return a vector of users', async () => {
-    //ARRANGE
     const formatArray = users
       .map((user) => {
         const userNew = {
@@ -50,7 +49,6 @@ describe('query users', async () => {
         return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
       });
 
-    //ACT
     const response = await queryGetAllUsers(token, 1, 21);
     const response2 = await queryGetAllUsers(token, 1, 10);
     const listUsersResponse = response.data.data.users.users;
@@ -61,7 +59,6 @@ describe('query users', async () => {
     const before2 = response2.data.data.users.before;
     const after2 = response2.data.data.users.after;
 
-    //ASSERT
     expect(listUsersResponse).to.be.deep.equal(formatArray);
     expect(formatArray.length).to.be.equal(count);
     expect(before).to.be.equal(0);
