@@ -23,12 +23,6 @@ describe('query users', async () => {
   });
 
   it('should return a vector of users', async () => {
-    const response = await queryGetAllUsers(token, 1, 20);
-    const listUsersResponse = response.data.data.users.users;
-    const count = response.data.data.users.count;
-    const before = response.data.data.users.before;
-    const after = response.data.data.users.after;
-
     const formatArray = users
       .map((user) => {
         const newUser = {
@@ -41,10 +35,17 @@ describe('query users', async () => {
       })
       .sort((a, b) => a.name.localeCompare(b.name));
 
-    expect(listUsersResponse).to.be.deep.equal(formatArray);
-    expect(formatArray.length).to.be.equal(count);
-    expect(before).to.be.equal(0);
-    expect(after).to.be.equal(0);
+    const response = await queryGetAllUsers(token, 1, 20);
+
+    const listUsersResponse = response.data.data.users;
+    const objTest = {
+      users: formatArray,
+      count: formatArray.length,
+      before: 0,
+      after: 0,
+      page: 1
+    };
+    expect(listUsersResponse).to.be.deep.equal(objTest);
   });
 
   it('an error should appear if authentication is not passed', async () => {
