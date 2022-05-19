@@ -1,6 +1,5 @@
 import { AppDataSource } from './data-source';
 import { User } from './entity/user';
-import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { Address } from './entity/address';
 
@@ -49,12 +48,8 @@ export const findUserById = (id: string) => {
   });
 };
 
-export const generateToken = (user: User) => {
-  return jwt.sign({ userId: user.id }, process.env.SECRET);
-};
-
-export const toHashPassword = (password: string) => {
-  return bcrypt.hash(password, 10);
+export const toHashPassword = async (password: string) => {
+  return await bcrypt.hash(password, 10);
 };
 
 export const addAddress = async (address) => {

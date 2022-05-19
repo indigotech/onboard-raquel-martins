@@ -2,13 +2,8 @@ import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
 import { User } from '../entity/user';
 import { queryCreateUser } from './query-create-user';
-import {
-  addUser,
-  findUserById,
-  generateToken,
-  toHashPassword
-} from '../functions';
 import { input, input2 } from './constants';
+import { generateToken } from '../utils/generate-token';
 
 describe('CreateUser Mutation', async () => {
   beforeEach(async () => {

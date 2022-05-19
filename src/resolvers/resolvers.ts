@@ -10,13 +10,13 @@ import {
   validateEmail,
   getCountUsers,
   addAddress,
-  generateToken,
   toHashPassword,
   getUsers,
   getUserById
 } from '../functions';
 import { getUserIdByToken } from '../utils/get-userId-by-token';
 import { Address } from '../entity/address';
+import { generateToken } from '../utils/generate-token';
 
 export const resolvers = {
   Query: {
