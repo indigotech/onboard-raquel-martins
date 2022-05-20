@@ -10,7 +10,8 @@ import {
   findUserEmail,
   generateToken,
   toHashPassword,
-  validateEmail
+  validateEmail,
+  getUsers
 } from '../functions';
 import { getUserIdByToken } from '../utils/get-userId-by-token';
 
@@ -18,22 +19,28 @@ export const resolvers = {
   Query: {
     user: async (_, args, context: { req }) => {
       const userId = getUserIdByToken(context);
-
-      if (userId !== args.id) {
+      if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
       const user = await findUserById(args.id);
       if (!user) {
         throw new CustomError('User not found.', 404);
       }
-
       return user;
+    },
+    users: (_, args, context: { req }) => {
+      const userId = getUserIdByToken(context);
+      if (!userId) {
+        throw new CustomError('Invalid token', 401);
+      }
+      const quantity: number = args.quantity;
+      return getUsers(quantity);
     }
   },
   Mutation: {
     async createUser(_, args, context: { req }) {
       const userId = getUserIdByToken(context);
-      if (!(await findUserById(userId))) {
+      if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
       const password = await toHashPassword(args.data.password);
@@ -78,14 +85,14 @@ export const resolvers = {
     async login(_, args) {
       const user = await findUserData(args.data.email);
       if (!user) {
-        throw new CustomError('Unable to login', 401);
+        throw new CustomError('Unregistered user email', 401);
       }
       const isPasswordValid = await bcrypt.compare(
         args.data.password,
         user.password
       );
       if (!isPasswordValid) {
-        throw new CustomError('Unable to login', 401);
+        throw new CustomError('Password incorrect', 401);
       }
       return {
         user,
