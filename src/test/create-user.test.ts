@@ -2,8 +2,9 @@ import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
 import { User } from '../entity/user';
 import { queryCreateUser } from './query-create-user';
-import { input, input2 } from './constants';
+import { inputCreateUserOne, inputCreateUserTwo } from './constants';
 import { generateToken } from '../utils/generate-token';
+import { addUser, findUserById, toHashPassword } from '../functions';
 
 describe('CreateUser Mutation', async () => {
   beforeEach(async () => {
@@ -16,14 +17,15 @@ describe('CreateUser Mutation', async () => {
 
   it('should create a user', async () => {
     const userOne = {
-      ...input,
-      password: await toHashPassword(input.password)
+      ...inputCreateUserOne,
+      password: await toHashPassword(inputCreateUserOne.password)
     };
+
     const user = await addUser(userOne);
     const token: string = generateToken(user);
-    const response = await queryCreateUser(input2, token);
+    const response = await queryCreateUser(inputCreateUserTwo, token);
     const findUser = await AppDataSource.manager.findOneBy(User, {
-      email: input2.email
+      email: inputCreateUserTwo.email
     });
     const findUserOne = await findUserById(user.id);
     const { id, ...userFields } = response.data.data.createUser;
@@ -36,9 +38,9 @@ describe('CreateUser Mutation', async () => {
   });
 
   it('should appear if the user passes an existing email', async () => {
-    const user: User = await addUser(input);
+    const user: User = await addUser(inputCreateUserOne);
     const token: string = generateToken(user);
-    const newInput = { ...input2, email: input.email };
+    const newInput = { ...inputCreateUserTwo, email: inputCreateUserOne.email };
     const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal(
       'Email already registered'
@@ -47,9 +49,9 @@ describe('CreateUser Mutation', async () => {
   });
 
   it('should appear an error if the password is less than 6 characters', async () => {
-    const user: User = await addUser(input);
+    const user: User = await addUser(inputCreateUserOne);
     const token: string = generateToken(user);
-    const newInput = { ...input2, password: '1' };
+    const newInput = { ...inputCreateUserTwo, password: '1' };
     const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal(
       'Password must contain at least 6 characters'
@@ -58,9 +60,9 @@ describe('CreateUser Mutation', async () => {
   });
 
   it('should appear an error if the password does not contain 1 letter', async () => {
-    const user: User = await addUser(input);
+    const user: User = await addUser(inputCreateUserOne);
     const token: string = generateToken(user);
-    const newInput = { ...input2, password: '123456' };
+    const newInput = { ...inputCreateUserTwo, password: '123456' };
     const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal(
       'The password must contain at least 1 letter'
@@ -69,9 +71,9 @@ describe('CreateUser Mutation', async () => {
   });
 
   it('should appear an error if the password does not contain 1 digit', async () => {
-    const user: User = await addUser(input);
+    const user: User = await addUser(inputCreateUserOne);
     const token: string = generateToken(user);
-    const newInput = { ...input2, password: 'abcdef' };
+    const newInput = { ...inputCreateUserTwo, password: 'abcdef' };
     const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal(
       'The password must contain at least 1 digit'
@@ -80,7 +82,7 @@ describe('CreateUser Mutation', async () => {
   });
 
   it('should appear an error if the token is not sent', async () => {
-    const response = await queryCreateUser(input2, '');
+    const response = await queryCreateUser(inputCreateUserTwo, '');
     expect(response.data.errors[0].message).to.be.equal(
       'Authentication required'
     );
@@ -88,9 +90,9 @@ describe('CreateUser Mutation', async () => {
   });
 
   it('should appear an error if the email is of an invalid format', async () => {
-    const user: User = await addUser(input);
+    const user: User = await addUser(inputCreateUserOne);
     const token: string = generateToken(user);
-    const newInput = { ...input2, email: 'teste' };
+    const newInput = { ...inputCreateUserTwo, email: 'teste' };
     const response = await queryCreateUser(newInput, token);
     expect(response.data.errors[0].message).to.be.equal('Invalid email format');
     expect(response.data.errors[0].code).to.be.equal(400);

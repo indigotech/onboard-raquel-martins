@@ -1,25 +1,23 @@
 import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
 import { User } from '../entity/user';
-import { addUser, toHashPassword, generateToken } from '../functions';
-import { invalidId, input, fakeUser } from './constants';
+import { addUser, toHashPassword } from '../functions';
+import { invalidId, inputCreateUserOne } from './constants';
 import { queryGetUser } from './query-user';
+import { generateFakeToken } from './functions';
 
 describe('query user', async () => {
-  let token: string;
+  const token: string = await generateFakeToken();
   let user;
-  let randomToken;
+
   beforeEach(async () => {
     AppDataSource.getRepository(User);
     const userOne = {
-      ...input,
-      password: await toHashPassword(input.password)
+      ...inputCreateUserOne,
+      password: await toHashPassword(inputCreateUserOne.password)
     };
     const userCreated = await addUser(userOne);
-    const tokenCreated: string = generateToken(userCreated);
-    token = tokenCreated;
     user = userCreated;
-    randomToken = generateToken(fakeUser);
   });
   afterEach(async () => {
     await AppDataSource.getRepository(User).delete({});
@@ -39,7 +37,7 @@ describe('query user', async () => {
   });
 
   it('should appear an error if token is invalid', async () => {
-    const response = await queryGetUser(user.id, randomToken);
+    const response = await queryGetUser(user.id, token.concat('a'));
     expect(response.data.errors[0].message).to.be.equal('Invalid token');
     expect(response.data.errors[0].code).to.be.equal(401);
   });

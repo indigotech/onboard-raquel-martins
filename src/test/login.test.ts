@@ -4,14 +4,14 @@ import { User } from '../entity/user';
 import * as jwt from 'jsonwebtoken';
 import { queryLogin } from './query-login';
 import { addUser, toHashPassword } from '../functions';
-import { input, loginInput } from './constants';
+import { inputCreateUserOne, loginInput } from './constants';
 
 describe('Login Mutation', async () => {
   beforeEach(async () => {
     AppDataSource.getRepository(User);
     const userOne = {
-      ...input,
-      password: await toHashPassword(input.password)
+      ...inputCreateUserOne,
+      password: await toHashPassword(inputCreateUserOne.password)
     };
     await addUser(userOne);
   });
