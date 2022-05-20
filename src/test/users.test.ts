@@ -3,9 +3,9 @@ import { AppDataSource } from '../data-source';
 import { User } from '../entity/user';
 import { addUser, toHashPassword, generateToken } from '../functions';
 import { queryGetAllUsers } from './query-users';
-import { input } from './constants/input';
+import { input } from './constants';
 import { expect } from 'chai';
-import { invalidToken } from './constants/invalid-token';
+import { invalidToken } from './constants';
 import { newUser } from '../utils/data-generate-users';
 
 describe('query users', async () => {
