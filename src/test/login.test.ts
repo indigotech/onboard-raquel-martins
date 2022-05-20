@@ -3,17 +3,16 @@ import { AppDataSource } from '../data-source';
 import { User } from '../entity/user';
 import * as jwt from 'jsonwebtoken';
 import { queryLogin } from './query-login';
-import { addUser, toHashPassword } from '../functions';
+import { toHashPassword } from '../functions';
 import { inputCreateUserOne, loginInput } from './constants';
 
 describe('Login Mutation', async () => {
   beforeEach(async () => {
-    AppDataSource.getRepository(User);
     const userOne = {
       ...inputCreateUserOne,
       password: await toHashPassword(inputCreateUserOne.password)
     };
-    await addUser(userOne);
+    await AppDataSource.getRepository(User).save(userOne);
   });
 
   afterEach(async () => {
@@ -21,18 +20,22 @@ describe('Login Mutation', async () => {
   });
 
   it('should login', async () => {
-    const findUser = await AppDataSource.manager.findOneBy(User, {
-      email: loginInput.email
-    });
     const response = await queryLogin(loginInput);
-    const user = response.data.data.login.user;
-    delete findUser.password;
-    delete user.password;
     const token = response.data.data.login.token;
     const decoded = jwt.verify(token, process.env.SECRET);
     const tokenPayload = decoded as jwt.JwtPayload;
+    const findUser = await AppDataSource.manager.findOneBy(User, {
+      email: loginInput.email
+    });
+
+    delete findUser.password;
+    const findUseId = findUser.id;
+    const user = response.data.data.login.user;
+    const tokenDecodedId = tokenPayload.userId.id;
+
     expect(user).to.be.deep.equal(findUser);
-    expect(tokenPayload.userId).to.be.equal(findUser.id);
+    expect(user.id).to.be.equal(findUseId);
+    expect(user.id).to.be.equal(tokenDecodedId);
   });
 
   it('should not be able to login with wrong password', async () => {

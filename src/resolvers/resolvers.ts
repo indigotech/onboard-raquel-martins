@@ -40,14 +40,11 @@ export const resolvers = {
       const page: number = args.page;
       const users = await getUsers(quantity, page);
       const totalUsers = await getCountUsers();
-
+      const offset = quantity * (page - 1);
       return {
         users: users,
         count: totalUsers,
-        before:
-          quantity * (page - 1) > totalUsers
-            ? totalUsers
-            : quantity * (page - 1),
+        before: offset > totalUsers ? totalUsers : offset,
         after: page * quantity > totalUsers ? 0 : totalUsers - page * quantity,
         page
       };
