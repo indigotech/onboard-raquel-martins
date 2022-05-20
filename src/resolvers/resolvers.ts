@@ -19,31 +19,28 @@ export const resolvers = {
   Query: {
     user: async (_, args, context: { req }) => {
       const userId = getUserIdByToken(context);
-
-      if (userId !== args.id) {
+      if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
       const user = await findUserById(args.id);
       if (!user) {
         throw new CustomError('User not found.', 404);
       }
-
       return user;
     },
-    users: async (_, args, context: { req }) => {
+    users: (_, args, context: { req }) => {
       const userId = getUserIdByToken(context);
       if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
       const quantity: number = args.quantity;
-
-      return await getUsers(quantity);
+      return getUsers(quantity);
     }
   },
   Mutation: {
     async createUser(_, args, context: { req }) {
       const userId = getUserIdByToken(context);
-      if (!(await findUserById(userId))) {
+      if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
       const password = await toHashPassword(args.data.password);
