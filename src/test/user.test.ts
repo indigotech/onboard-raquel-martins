@@ -6,7 +6,7 @@ import { randomId, inputCreateUserOne, invalidToken } from './constants';
 import { queryGetUser } from './query-user';
 import { generateToken } from '../utils/generate-token';
 
-describe('query user', async () => {
+describe('query user', () => {
   const token: string = generateToken(randomId);
   let user;
 
