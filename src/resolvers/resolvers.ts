@@ -5,7 +5,6 @@ import {
   addUser,
   containDigit,
   containLetter,
-  findUserById,
   findUserData,
   findUserEmail,
   validateEmail,
@@ -13,7 +12,8 @@ import {
   addAddress,
   generateToken,
   toHashPassword,
-  getUsersAndAddress
+  getUsers,
+  getUserById
 } from '../functions';
 import { getUserIdByToken } from '../utils/get-userId-by-token';
 import { Address } from '../entity/address';
@@ -25,20 +25,20 @@ export const resolvers = {
       if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
-      const user = await findUserById(args.id);
+      const user = await getUserById(args.id);
       if (!user) {
         throw new CustomError('User not found.', 404);
       }
       return user;
     },
-    users: (_, args, context: { req }) => {
+    users: async (_, args, context: { req }) => {
       const userId = getUserIdByToken(context);
       if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
       const quantity: number = args.quantity;
       const page: number = args.page;
-      const users = await getUsersAndAddress(quantity, page);
+      const users = await getUsers(quantity, page);
       const totalUsers = await getCountUsers();
 
       return {

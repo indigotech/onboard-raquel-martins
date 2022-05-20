@@ -61,7 +61,7 @@ export const addAddress = async (address) => {
   return AppDataSource.manager.save(Address, address);
 };
 
-export const getUserAndAddressByUserId = (id) => {
+export const getUserById = (id) => {
   return AppDataSource.getRepository(User)
     .createQueryBuilder('user')
     .leftJoinAndSelect('user.addresses', 'address')
@@ -69,7 +69,7 @@ export const getUserAndAddressByUserId = (id) => {
     .getOne();
 };
 
-export const getUsersAndAddress = (quantity: number, page: number) => {
+export const getUsers = (quantity: number, page: number) => {
   return AppDataSource.getRepository(User)
     .createQueryBuilder('user')
     .leftJoinAndSelect('user.addresses', 'address')
