@@ -6,7 +6,7 @@ import { newUser } from '../utils/data-generate-users';
 import { generateToken } from '../utils/generate-token';
 import { randomId } from './constants';
 
-describe('query users', async () => {
+describe('Query users', () => {
   const users = [];
   const token: string = generateToken(randomId);
 
@@ -18,7 +18,7 @@ describe('query users', async () => {
   });
 
   after(async () => {
-    AppDataSource.getRepository(User).delete({});
+    await AppDataSource.getRepository(User).delete({});
   });
 
   it('should return a vector of users', async () => {
