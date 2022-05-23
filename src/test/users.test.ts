@@ -9,22 +9,16 @@ import { randomId } from './constants';
 describe('Query users', () => {
   const users = [];
   const token: string = generateToken(randomId);
+  let arrayUsers;
 
   before(async () => {
     for (let i = 0; i < 33; i++) {
       users.push(await newUser());
     }
+
     await AppDataSource.getRepository(User).save(users);
-  });
 
-  after(async () => {
-    await AppDataSource.getRepository(User).delete({});
-  });
-
-  it('should return a vector of users', async () => {
-    const response = await queryGetAllUsers(token, 1, 10);
-
-    const arrayUsers = users
+    const arrayMapUsers = users
       .map((user) => {
         const newUser = {
           id: user.id,
@@ -35,7 +29,17 @@ describe('Query users', () => {
         return newUser;
       })
       .sort((a, b) => a.name.localeCompare(b.name));
-    const expectedUsers = arrayUsers.slice(0, -23);
+    arrayUsers = arrayMapUsers;
+  });
+
+  after(async () => {
+    await AppDataSource.getRepository(User).delete({});
+  });
+
+  it('should return a vector of users', async () => {
+    const response = await queryGetAllUsers(token, 1, 10);
+
+    const expectedUsers = arrayUsers.slice(0, 10);
     const listUsersResponse = response.data.data.users;
     const expectedResponse = {
       users: expectedUsers,
@@ -50,17 +54,6 @@ describe('Query users', () => {
   it('should return the following values on intermediary page', async () => {
     const response = await queryGetAllUsers(token, 2, 10);
 
-    const arrayUsers = users
-      .map((user) => {
-        const newUser = {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          birthDate: user.birthDate
-        };
-        return newUser;
-      })
-      .sort((a, b) => a.name.localeCompare(b.name));
     const expectedUsers = arrayUsers.slice(10, -13);
     const listUsersResponse = response.data.data.users;
     const expectedResponse = {
@@ -76,17 +69,6 @@ describe('Query users', () => {
   it('should return the following values on last page', async () => {
     const response = await queryGetAllUsers(token, 4, 10);
 
-    const arrayUsers = users
-      .map((user) => {
-        const newUser = {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          birthDate: user.birthDate
-        };
-        return newUser;
-      })
-      .sort((a, b) => a.name.localeCompare(b.name));
     const expectedUsers = arrayUsers.slice(30);
     const listUsersResponse = response.data.data.users;
     const expectedResponse = {

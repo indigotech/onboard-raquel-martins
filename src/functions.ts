@@ -48,8 +48,8 @@ export const findUserById = (id: string) => {
   });
 };
 
-export const toHashPassword = async (password: string) => {
-  return await bcrypt.hash(password, 10);
+export const toHashPassword = (password: string) => {
+  return bcrypt.hash(password, 10);
 };
 
 export const addAddress = async (address) => {
