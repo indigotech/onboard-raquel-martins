@@ -2,7 +2,7 @@
 
 # 📓 Description
 
-A backend project, using graphql, an API was developed, where it is possible to create users, login, register user addresses and pagination.
+A backend project was developed, using graphql, in which an API was developed, where it is possible to create users, login, register user addresses and pagination.
 
 # 🛠 Environment and tools \*
 
