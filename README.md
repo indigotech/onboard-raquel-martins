@@ -1,8 +1,7 @@
 # Onboard Project
 
 # Description
-
-Backend Project
+A backend project, using graphql, an API was developed, where it is possible to create users, login, register user addresses and pagination.
 
 # Environment and tools \*
 
@@ -12,6 +11,11 @@ Backend Project
 -Docker
 -Typescript
 -Node.js
+-TypeORM
+-Axios
+-Mocha
+-jsonwebtoken
+-bcrypt
 
 # Steps to run and debug \*
 

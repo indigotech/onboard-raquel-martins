@@ -1,7 +1,8 @@
 import { AppDataSource } from './data-source';
-import { User } from './entity/User';
+import { User } from './entity/user';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import { Address } from './entity/address';
 
 //Regex
 const lettersRegex = new RegExp('[A-Za-z]');
@@ -56,11 +57,28 @@ export const toHashPassword = (password: string) => {
   return bcrypt.hash(password, 10);
 };
 
-export const getUsers = async (quantity: number) => {
-  return await AppDataSource.getRepository(User).find({
-    order: {
-      name: 'ASC'
-    },
-    take: quantity
-  });
+export const addAddress = async (address) => {
+  return AppDataSource.manager.save(Address, address);
+};
+
+export const getUserById = (id) => {
+  return AppDataSource.getRepository(User)
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.addresses', 'address')
+    .where('user.id = :id', { id })
+    .getOne();
+};
+
+export const getUsers = (quantity: number, page: number) => {
+  return AppDataSource.getRepository(User)
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.addresses', 'address')
+    .orderBy('user.name', 'ASC')
+    .take(quantity)
+    .skip(quantity * (page - 1))
+    .getMany();
+};
+
+export const getCountUsers = () => {
+  return AppDataSource.manager.count(User);
 };

@@ -1,19 +1,22 @@
 import * as bcrypt from 'bcrypt';
-import { User } from '../entity/User';
+import { User } from '../entity/user';
 import { CustomError } from '../errors';
 import {
   addUser,
   containDigit,
   containLetter,
-  findUserById,
   findUserData,
   findUserEmail,
+  validateEmail,
+  getCountUsers,
+  addAddress,
   generateToken,
   toHashPassword,
-  validateEmail,
-  getUsers
+  getUsers,
+  getUserById
 } from '../functions';
 import { getUserIdByToken } from '../utils/get-userId-by-token';
+import { Address } from '../entity/address';
 
 export const resolvers = {
   Query: {
@@ -22,19 +25,32 @@ export const resolvers = {
       if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
-      const user = await findUserById(args.id);
+      const user = await getUserById(args.id);
       if (!user) {
         throw new CustomError('User not found.', 404);
       }
       return user;
     },
-    users: (_, args, context: { req }) => {
+    users: async (_, args, context: { req }) => {
       const userId = getUserIdByToken(context);
       if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
       const quantity: number = args.quantity;
-      return getUsers(quantity);
+      const page: number = args.page;
+      const users = await getUsers(quantity, page);
+      const totalUsers = await getCountUsers();
+
+      return {
+        users: users,
+        count: totalUsers,
+        before:
+          quantity * (page - 1) > totalUsers
+            ? totalUsers
+            : quantity * (page - 1),
+        after: page * quantity > totalUsers ? 0 : totalUsers - page * quantity,
+        page
+      };
     }
   },
   Mutation: {
@@ -98,6 +114,14 @@ export const resolvers = {
         user,
         token: generateToken(user)
       };
+    },
+    async createAddress(_, args, context: { req }) {
+      const userId = getUserIdByToken(context);
+      if (!userId) {
+        throw new CustomError('Invalid token', 401);
+      }
+      const address: Address = args.data;
+      return addAddress(address);
     }
   }
 };

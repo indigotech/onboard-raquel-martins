@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
-import { User } from '../entity/User';
+import { User } from '../entity/user';
 import { addUser, toHashPassword, generateToken } from '../functions';
 import { invalidId, input, fakeUser } from './constants';
 import { queryGetUser } from './query-user';
