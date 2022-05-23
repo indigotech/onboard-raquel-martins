@@ -37,6 +37,5 @@ export class Address {
     cascade: true,
     onDelete: 'CASCADE'
   })
-  @JoinTable()
   user: User;
 }
