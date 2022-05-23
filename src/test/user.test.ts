@@ -1,25 +1,23 @@
 import { expect } from 'chai';
 import { AppDataSource } from '../data-source';
 import { User } from '../entity/user';
-import { addUser, toHashPassword, generateToken } from '../functions';
-import { invalidId, input, fakeUser } from './constants';
+import { addUser, toHashPassword } from '../functions';
+import { randomId, inputCreateUserOne, invalidToken } from './constants';
 import { queryGetUser } from './query-user';
+import { generateToken } from '../utils/generate-token';
 
-describe('query user', async () => {
-  let token: string;
+describe('query user', () => {
+  const token: string = generateToken(randomId);
   let user;
-  let randomToken;
+
   beforeEach(async () => {
     AppDataSource.getRepository(User);
     const userOne = {
-      ...input,
-      password: await toHashPassword(input.password)
+      ...inputCreateUserOne,
+      password: await toHashPassword(inputCreateUserOne.password)
     };
     const userCreated = await addUser(userOne);
-    const tokenCreated: string = generateToken(userCreated);
-    token = tokenCreated;
     user = userCreated;
-    randomToken = generateToken(fakeUser);
   });
   afterEach(async () => {
     await AppDataSource.getRepository(User).delete({});
@@ -33,13 +31,14 @@ describe('query user', async () => {
   });
 
   it('should appear an error if user id does not exist in data base', async () => {
-    const response = await queryGetUser(invalidId, token);
+    const response = await queryGetUser(randomId, token);
     expect(response.data.errors[0].message).to.be.equal('User not found.');
     expect(response.data.errors[0].code).to.be.equal(404);
   });
 
   it('should appear an error if token is invalid', async () => {
-    const response = await queryGetUser(user.id, randomToken);
+    const response = await queryGetUser(user.id, invalidToken);
+    console.log(response.data.errors[0]);
     expect(response.data.errors[0].message).to.be.equal('Invalid token');
     expect(response.data.errors[0].code).to.be.equal(401);
   });

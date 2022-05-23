@@ -1,6 +1,5 @@
 import { AppDataSource } from './data-source';
 import { User } from './entity/user';
-import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { Address } from './entity/address';
 
@@ -47,10 +46,6 @@ export const findUserById = (id: string) => {
   return AppDataSource.manager.findOneBy(User, {
     id
   });
-};
-
-export const generateToken = (user: User) => {
-  return jwt.sign({ userId: user.id }, process.env.SECRET);
 };
 
 export const toHashPassword = (password: string) => {
