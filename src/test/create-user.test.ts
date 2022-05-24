@@ -6,7 +6,7 @@ import { inputCreateUserOne, inputCreateUserTwo, randomId } from './constants';
 import { generateToken } from '../utils/generate-token';
 import { findUserById, toHashPassword } from '../functions';
 
-describe('CreateUser Mutation', async () => {
+describe('CreateUser Mutation', () => {
   const token: string = generateToken(randomId);
   let user;
   beforeEach(async () => {

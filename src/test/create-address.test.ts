@@ -7,7 +7,7 @@ import { queryCreateAddress } from './query-create-address';
 import { addUser } from '../functions';
 import { expect } from 'chai';
 
-describe('CreateAddress Mutation', async () => {
+describe('CreateAddress Mutation', () => {
   const token: string = generateToken(randomId);
   let user;
 
