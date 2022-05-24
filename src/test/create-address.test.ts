@@ -17,8 +17,8 @@ describe('CreateAddress Mutation', () => {
   });
 
   afterEach(async () => {
-    AppDataSource.getRepository(Address).delete({});
-    AppDataSource.getRepository(User).delete({});
+    await AppDataSource.getRepository(Address).delete({});
+    await AppDataSource.getRepository(User).delete({});
   });
 
   it('should create a address', async () => {

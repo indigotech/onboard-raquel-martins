@@ -11,7 +11,7 @@ export const newUser = async () => {
   return user;
 };
 
-export const newAddress = async () => {
+export const newAddress = () => {
   const address = {
     cep: faker.address.zipCode(),
     city: faker.address.city(),
