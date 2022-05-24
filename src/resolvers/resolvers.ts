@@ -117,6 +117,9 @@ export const resolvers = {
       if (!userId) {
         throw new CustomError('Invalid token', 401);
       }
+      if (!args.data.user) {
+        throw new CustomError('Requires user id', 401);
+      }
       const address: Address = args.data;
       return addAddress(address);
     }

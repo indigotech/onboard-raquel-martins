@@ -13,6 +13,16 @@ export const queryGetAllUsers = (token, page, quantity) => {
             name 
             email
             birthDate
+            addresses {
+              cep
+              city
+              complement
+              neighborhood
+              state
+              street
+              streetNumber
+              id
+            }
           }
           count
           before

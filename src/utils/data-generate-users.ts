@@ -10,3 +10,16 @@ export const newUser = async () => {
   };
   return user;
 };
+
+export const newAddress = async () => {
+  const address = {
+    cep: faker.address.zipCode(),
+    city: faker.address.city(),
+    complement: faker.address.streetAddress(),
+    neighborhood: faker.address.streetName(),
+    state: faker.address.state(),
+    street: faker.address.streetName(),
+    streetNumber: Number(faker.random.numeric())
+  };
+  return address;
+};

@@ -1,10 +1,11 @@
-import { AppDataSource } from '../data-source';
-import { User } from '../entity/user';
-import { queryGetAllUsers } from './query-users';
 import { expect } from 'chai';
-import { newUser } from '../utils/data-generate-users';
+import { AppDataSource } from '../data-source';
+import { Address } from '../entity/address';
+import { User } from '../entity/user';
+import { newAddress, newUser } from '../utils/data-generate-users';
 import { generateToken } from '../utils/generate-token';
 import { randomId } from './constants';
+import { queryGetAllUsers } from './query-users';
 
 describe('Query users', () => {
   const users = [];
@@ -24,7 +25,8 @@ describe('Query users', () => {
           id: user.id,
           name: user.name,
           email: user.email,
-          birthDate: user.birthDate
+          birthDate: user.birthDate,
+          addresses: []
         };
         return newUser;
       })
@@ -34,6 +36,7 @@ describe('Query users', () => {
 
   after(async () => {
     await AppDataSource.getRepository(User).delete({});
+    await AppDataSource.getRepository(Address).delete({});
   });
 
   it('should return a vector of users', async () => {
@@ -96,10 +99,25 @@ describe('Query users', () => {
 
   it('an error should appear if authentication is not passed', async () => {
     const response = await queryGetAllUsers('', 1, 10);
+    const { code, message } = response.data.errors[0];
+    expect(message).to.be.equal('Authentication required');
+    expect(code).to.be.equal(401);
+  });
 
-    expect(response.data.errors[0].message).to.be.equal(
-      'Authentication required'
+  it('should return addresses', async () => {
+    const randomAddress = await newAddress();
+    const inputCreateAddress = { ...randomAddress, user: arrayUsers[0].id };
+    const addressSaved = await AppDataSource.getRepository(Address).save(
+      inputCreateAddress
     );
-    expect(response.data.errors[0].code).to.be.equal(401);
+    delete addressSaved.user;
+
+    const response = await queryGetAllUsers(token, 1, 1);
+    const addressResponse = response.data.data.users.users[0];
+    const expectedRes = {
+      ...arrayUsers[0],
+      addresses: [addressSaved]
+    };
+    expect(expectedRes).to.be.deep.equal(addressResponse);
   });
 });

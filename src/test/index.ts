@@ -14,3 +14,5 @@ require('./login.test');
 require('./user.test');
 
 require('./users.test');
+
+require('./create-address.test');
