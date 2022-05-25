@@ -12,8 +12,7 @@ describe('CreateAddress Mutation', () => {
   let user;
 
   beforeEach(async () => {
-    const saveUser = await addUser(inputCreateUserOne);
-    user = saveUser;
+    user = await addUser(inputCreateUserOne);
   });
 
   afterEach(async () => {
@@ -21,15 +20,19 @@ describe('CreateAddress Mutation', () => {
     await AppDataSource.getRepository(User).delete({});
   });
 
-  it('should create a address', async () => {
+  it.only('should create a address', async () => {
     const newInputAddress = {
       ...inputAddress,
       user: user.id
     };
+
     const response = await queryCreateAddress(newInputAddress, token);
     const addressResponse = response.data.data.createAddress;
+    const findAddress = await AppDataSource.manager.find(Address);
+    delete findAddress[0].id;
     delete newInputAddress.user;
     delete addressResponse.id;
+    expect(newInputAddress).to.be.deep.equal(findAddress[0]);
     expect(addressResponse).to.be.deep.equal(newInputAddress);
   });
 
@@ -51,7 +54,7 @@ describe('CreateAddress Mutation', () => {
     };
     const response = await queryCreateAddress(newInputAddress, token);
     const { code, message } = response.data.errors[0];
-    expect(message).to.be.equal('Requires user id');
-    expect(code).to.be.equal(401);
+    expect(message).to.be.equal('Id not found');
+    expect(code).to.be.equal(404);
   });
 });

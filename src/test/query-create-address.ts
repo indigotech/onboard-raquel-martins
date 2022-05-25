@@ -16,7 +16,6 @@ export const queryCreateAddress = (input, token) => {
       streetNumber
       complement
       id
-      
         }
       }
           `,
