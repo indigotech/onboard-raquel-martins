@@ -120,27 +120,13 @@ export const resolvers = {
       if (!args.data.userId) {
         throw new CustomError('Id not found', 404);
       }
-      const {
-        userId,
-        cep,
-        city,
-        state,
-        street,
-        streetNumber,
-        complement,
-        neighborhood
-      } = args.data;
+      const { userId, ...addressFields } = args.data;
+
       const user = new User();
       user.id = userId;
       const address = new Address();
       address.user = user;
-      address.cep = cep;
-      address.city = city;
-      address.state = state;
-      address.street = street;
-      address.streetNumber = streetNumber;
-      address.complement = complement;
-      address.neighborhood = neighborhood;
+      Object.assign(address, addressFields);
       return addAddress(address);
     }
   }
