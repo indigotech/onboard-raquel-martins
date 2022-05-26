@@ -41,16 +41,16 @@ describe('Login Mutation', async () => {
   it('should not be able to login with wrong password', async () => {
     const newLogin = { ...loginInput, password: 'alecrim1' };
     const response = await queryLogin(newLogin);
-    expect(response.data.errors[0].message).to.be.equal('Password incorrect');
-    expect(response.data.errors[0].code).to.be.equal(401);
+    const { code, message } = response.data.errors[0];
+    expect(message).to.be.equal('Password incorrect');
+    expect(code).to.be.equal(401);
   });
 
   it('should not be able to login with email that does not exist', async () => {
     const newLogin = { ...loginInput, email: 'random@gmail.com' };
     const response = await queryLogin(newLogin);
-    expect(response.data.errors[0].message).to.be.equal(
-      'Unregistered user email'
-    );
-    expect(response.data.errors[0].code).to.be.equal(401);
+    const { code, message } = response.data.errors[0];
+    expect(message).to.be.equal('Unregistered user email');
+    expect(code).to.be.equal(401);
   });
 });

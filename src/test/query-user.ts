@@ -12,6 +12,16 @@ export const queryGetUser = (id, token) => {
       name
       email
       birthDate
+      addresses {
+        cep
+        city
+        complement
+        neighborhood
+        state
+        street
+        streetNumber
+        id
+      }
         }
       }
     `,

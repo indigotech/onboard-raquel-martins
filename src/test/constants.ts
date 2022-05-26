@@ -31,3 +31,15 @@ export const fakeUser = {
   password: '1234abc',
   birthDate: '10-10-2000'
 };
+
+//Create Address
+
+export const inputAddress = {
+  cep: '01155060',
+  street: 'Rua Brigadeiro Galvão',
+  complement: 'prédio 1',
+  streetNumber: 645,
+  neighborhood: 'Barra funda',
+  city: 'São paulo',
+  state: 'SP'
+};

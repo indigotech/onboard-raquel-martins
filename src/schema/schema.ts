@@ -57,6 +57,6 @@ export const typeDefs = gql`
     neighborhood: String!
     city: String!
     state: String!
-    user: String!
+    userId: String!
   }
 `;
