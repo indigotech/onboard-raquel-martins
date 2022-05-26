@@ -124,9 +124,11 @@ export const resolvers = {
 
       const user = new User();
       user.id = userId;
+
       const address = new Address();
       address.user = user;
       Object.assign(address, addressFields);
+
       return addAddress(address);
     }
   }
