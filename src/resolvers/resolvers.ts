@@ -113,14 +113,34 @@ export const resolvers = {
       };
     },
     async createAddress(_, args, context: { req }) {
-      const userId = getUserIdByToken(context);
-      if (!userId) {
+      const userIdToken = getUserIdByToken(context);
+      if (!userIdToken) {
         throw new CustomError('Invalid token', 401);
       }
-      if (!args.data.user) {
+      if (!args.data.userId) {
         throw new CustomError('Id not found', 404);
       }
-      const address: Address = args.data;
+      const {
+        userId,
+        cep,
+        city,
+        state,
+        street,
+        streetNumber,
+        complement,
+        neighborhood
+      } = args.data;
+      const user = new User();
+      user.id = userId;
+      const address = new Address();
+      address.user = user;
+      address.cep = cep;
+      address.city = city;
+      address.state = state;
+      address.street = street;
+      address.streetNumber = streetNumber;
+      address.complement = complement;
+      address.neighborhood = neighborhood;
       return addAddress(address);
     }
   }
